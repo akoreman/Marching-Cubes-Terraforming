@@ -7,4 +7,4 @@ WIP. Terraforming game demo based on my implementation of the marching cubes alg
 
 # Screenshots
 
-<img src="https://raw.github.com/akoreman/Terraforming-Game-Demo/main/images/noise.png" width="400">  
+<img src="https://raw.github.com/akoreman/Terraforming-Game-Demo/main/images/Noise.png" width="400">  
