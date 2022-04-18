@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,8 +37,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_Sun: {fileID: 1905227765}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -311,6 +311,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1930594822}
   - component: {fileID: 1930594821}
+  - component: {fileID: 1930594824}
+  - component: {fileID: 1930594823}
   m_Layer: 0
   m_Name: MarchingTerrain
   m_TagString: Untagged
@@ -330,11 +332,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b033a779a1fe14e86a3bcc3d730665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nX: 100
-  nY: 100
-  nZ: 100
-  gridSize: 0.1
-  thresholdValue: 0.6
+  nX: 30
+  nY: 30
+  nZ: 30
+  gridSize: 0.5
+  thresholdValue: 0.3
   meshMaterial: {fileID: 2100000, guid: 3da34b6e6b0d2734d81776f6afcd8cdd, type: 2}
   vertexWelding: 1
 --- !u!4 &1930594822
@@ -352,3 +354,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1930594823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930594820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0a3b31846662e4ea85d8c3247d21b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fieldExponent: 1
+--- !u!114 &1930594824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930594820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cb9554539a75cc469fc5aa749d78c1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vertexInterpolation: 1

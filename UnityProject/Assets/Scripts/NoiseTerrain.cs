@@ -12,7 +12,6 @@ using Unity.Mathematics;
 // Handles the construction and updating of the scalar field using the Job system.
 public class NoiseTerrain : MonoBehaviour
 {
-    List<PointCharge> chargesInScene = new List<PointCharge>();
     public ScalarFieldPoint[] scalarField;
     public NativeHashMap<int, ScalarFieldPoint> scalarFieldMap;
 
@@ -26,11 +25,6 @@ public class NoiseTerrain : MonoBehaviour
         scalarField = new ScalarFieldPoint[nX * nY * nZ];
         scalarFieldMap = new NativeHashMap<int, ScalarFieldPoint>(nX * nY * nZ, Allocator.TempJob);
 
-        NativeArray<PointCharge> chargesInScenNative = new NativeArray<PointCharge>(chargesInScene.Count, Allocator.TempJob);
-
-        for (int i = 0; i < chargesInScene.Count; i++)
-            chargesInScenNative[i] = chargesInScene[i];
-
         // Create the job instance which handles the updating of the scalar field.
         potentialModificationJob = new UpdatePotentialJob()
         {
@@ -38,7 +32,6 @@ public class NoiseTerrain : MonoBehaviour
             nY = nY,
             nZ = nZ,
             gridSize = gridSize,
-            chargesInScene = chargesInScenNative,
             ScalarFieldWriter = scalarFieldMap.AsParallelWriter(),
             fieldExponent = fieldExponent
         };
@@ -50,7 +43,6 @@ public class NoiseTerrain : MonoBehaviour
         for (int i = 0; i < (nX * nY * nZ); i++)
             scalarField[i] = scalarFieldMap[i];
 
-        chargesInScenNative.Dispose();
         scalarFieldMap.Dispose();
     }
 
@@ -70,9 +62,6 @@ public class NoiseTerrain : MonoBehaviour
         [ReadOnly]
         public float gridSize;
 
-        [ReadOnly]
-        public NativeArray<PointCharge> chargesInScene;
-
         [WriteOnly]
         public NativeHashMap<int, ScalarFieldPoint>.ParallelWriter ScalarFieldWriter;
 
@@ -91,7 +80,8 @@ public class NoiseTerrain : MonoBehaviour
             ScalarFieldPoint scalarFieldPoint;
 
             scalarFieldPoint.position = new Vector3(position.x * gridSize, position.y * gridSize, position.z * gridSize);
-            scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
+            scalarFieldPoint.potential = scalarFieldPoint.position.y;
+            //scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
 
             ScalarFieldWriter.TryAdd(i, scalarFieldPoint);
         }
@@ -116,6 +106,9 @@ public class NoiseTerrain : MonoBehaviour
 
         public static float Noise(float x, float y, float z)
         {
+            if (Mathf.Sqrt(x * x + y * y + z * z) > 10.0f)
+                return 1.0f;
+
             var X = Mathf.FloorToInt(x) & 0xff;
             var Y = Mathf.FloorToInt(y) & 0xff;
             var Z = Mathf.FloorToInt(z) & 0xff;
@@ -174,5 +167,11 @@ public class NoiseTerrain : MonoBehaviour
     };
 
     }
+}
+
+public struct ScalarFieldPoint
+{
+    public Vector3 position;
+    public float potential;
 }
 
