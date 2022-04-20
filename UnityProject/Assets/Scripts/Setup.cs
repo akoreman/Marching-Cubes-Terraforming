@@ -21,9 +21,16 @@ public class Setup : MonoBehaviour
         //marchingCubes.GetComponent<NoiseTerrain>().BuildScalarField(nX,nY,nZ, gridSize);
         marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(0f,0f,0f));
 
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(3f,0f,2f));
+        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(9.5f,0f,0f));
 
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(6f,0f,1f));
+        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(-9.5f,0f,0f));
+
+        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(0f,0f,9.5f));
+
+        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(0f,0f,-9.5f));
+
+
+        
     }
 
 

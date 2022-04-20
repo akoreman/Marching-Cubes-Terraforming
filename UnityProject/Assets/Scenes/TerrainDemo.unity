@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 1930594821}
   - component: {fileID: 1930594824}
   - component: {fileID: 1930594823}
+  - component: {fileID: 1930594825}
   m_Layer: 0
   m_Name: MarchingTerrain
   m_TagString: Untagged
@@ -345,13 +346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b033a779a1fe14e86a3bcc3d730665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nX: 30
-  nY: 30
-  nZ: 30
-  gridSize: 0.5
-  thresholdValue: 0
-  meshMaterial: {fileID: 2100000, guid: 3da34b6e6b0d2734d81776f6afcd8cdd, type: 2}
-  vertexWelding: 1
 --- !u!4 &1930594822
 Transform:
   m_ObjectHideFlags: 0
@@ -393,3 +387,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertexInterpolation: 1
+  vertexWelding: 1
+--- !u!114 &1930594825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930594820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a11438ba709f702439b32381d658f3a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nXPerChunk: 20
+  nYPerChunk: 20
+  nZPerChunk: 20
+  chunkGridSize: 0.5
+  chunkMaterial: {fileID: 2100000, guid: 6c776e55273c5b0468d5833c877a3e76, type: 2}
+  thresholdValue: 0.5
