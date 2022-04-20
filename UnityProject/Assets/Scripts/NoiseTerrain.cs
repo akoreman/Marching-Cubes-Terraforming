@@ -12,18 +12,14 @@ using Unity.Mathematics;
 // Handles the construction and updating of the scalar field using the Job system.
 public class NoiseTerrain : MonoBehaviour
 {
-    public ScalarFieldPoint[] scalarField;
-    public NativeHashMap<int, ScalarFieldPoint> scalarFieldMap;
-
-    public UpdatePotentialJob potentialModificationJob;
-    public JobHandle potentialModificationJobHandle;
-
     public float fieldExponent = 1.0f;
 
-    public void BuildScalarField(int nX, int nY, int nZ, float gridSize)
+    public ScalarFieldPoint[] InitializeScalarField(int nX, int nY, int nZ, float gridSize, Vector3 centerOffset)
     {
-        scalarField = new ScalarFieldPoint[nX * nY * nZ];
-        scalarFieldMap = new NativeHashMap<int, ScalarFieldPoint>(nX * nY * nZ, Allocator.TempJob);
+        ScalarFieldPoint[] scalarField = new ScalarFieldPoint[nX * nY * nZ];
+        NativeHashMap<int, ScalarFieldPoint> scalarFieldMap = new NativeHashMap<int, ScalarFieldPoint>(nX * nY * nZ, Allocator.TempJob);
+
+        UpdatePotentialJob potentialModificationJob;
 
         // Create the job instance which handles the updating of the scalar field.
         potentialModificationJob = new UpdatePotentialJob()
@@ -32,11 +28,12 @@ public class NoiseTerrain : MonoBehaviour
             nY = nY,
             nZ = nZ,
             gridSize = gridSize,
+            centerOffset = centerOffset,
             ScalarFieldWriter = scalarFieldMap.AsParallelWriter(),
             fieldExponent = fieldExponent
         };
 
-        potentialModificationJobHandle = potentialModificationJob.Schedule(nX * nY * nZ, default);
+        JobHandle potentialModificationJobHandle = potentialModificationJob.Schedule(nX * nY * nZ, default);
 
         potentialModificationJobHandle.Complete();
 
@@ -44,6 +41,8 @@ public class NoiseTerrain : MonoBehaviour
             scalarField[i] = scalarFieldMap[i];
 
         scalarFieldMap.Dispose();
+
+        return scalarField;
     }
 
     // The job which handles the scalar field construction.
@@ -62,6 +61,9 @@ public class NoiseTerrain : MonoBehaviour
         [ReadOnly]
         public float gridSize;
 
+        [ReadOnly]
+        public Vector3 centerOffset;
+
         [WriteOnly]
         public NativeHashMap<int, ScalarFieldPoint>.ParallelWriter ScalarFieldWriter;
 
@@ -79,9 +81,9 @@ public class NoiseTerrain : MonoBehaviour
 
             ScalarFieldPoint scalarFieldPoint;
 
-            scalarFieldPoint.position = new Vector3(position.x * gridSize, position.y * gridSize, position.z * gridSize);
-            scalarFieldPoint.potential = scalarFieldPoint.position.y;
-            //scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
+            scalarFieldPoint.position = new Vector3(position.x * gridSize, position.y * gridSize, position.z * gridSize) + centerOffset;
+            //scalarFieldPoint.potential = scalarFieldPoint.position.y;
+            scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
 
             ScalarFieldWriter.TryAdd(i, scalarFieldPoint);
         }

@@ -19,26 +19,18 @@ public class MarchingCubes : MonoBehaviour
 {
     public bool vertexInterpolation = true;
 
-    GameObject marchingCubes;
+    public bool vertexWelding = true;
 
-    int nX;
-    int nY;
-    int nZ;
-
-    public UpdateTriangleListJob triangleListModificationJob;
-    public JobHandle triangleListModificationJobHandle;
-
-    public NativeArray<flagNode> flagList;
-
-    public void GetVerticesFromField(ScalarFieldPoint[] scalarField, float thresholdValue)
+    public Mesh GetMeshFromField(ScalarFieldPoint[] scalarField, float thresholdValue)
     {
-        marchingCubes = this.gameObject;
+        GameObject marchingCubes = this.gameObject;
 
-        nX = marchingCubes.GetComponent<Setup>().nX;
-        nY = marchingCubes.GetComponent<Setup>().nY;
-        nZ = marchingCubes.GetComponent<Setup>().nZ;
+        int nX = marchingCubes.GetComponent<ChunkHandler>().nXPerChunk;
+        int nY = marchingCubes.GetComponent<ChunkHandler>().nYPerChunk;
+        int nZ = marchingCubes.GetComponent<ChunkHandler>().nZPerChunk;
 
-        flagList = new NativeArray<flagNode>(nX * nY * nZ, Allocator.TempJob);
+        NativeArray<flagNode> flagList = new NativeArray<flagNode>(nX * nY * nZ, Allocator.TempJob);
+        NativeQueue<Triangle> triangleQueue = new NativeQueue<Triangle>(Allocator.TempJob);
 
         // For each point at which the scalar field is defined set a flag whether the field is above or below 
         // a threshold value at that point.
@@ -51,6 +43,8 @@ public class MarchingCubes : MonoBehaviour
             flagList[i] = flag;
         }
 
+        UpdateTriangleListJob triangleListModificationJob;
+
         // Job instance which handles the construction of the mesh.
         triangleListModificationJob = new UpdateTriangleListJob()
         {
@@ -59,11 +53,33 @@ public class MarchingCubes : MonoBehaviour
             nZ = nZ,
             vertexInterpolation = vertexInterpolation,
             flagList = flagList,
-            triangleQueueWriter = marchingCubes.GetComponent<Setup>().triangleQueue.AsParallelWriter(),
+            triangleQueueWriter = triangleQueue.AsParallelWriter(),
             thresholdValue = thresholdValue
         };
 
+        JobHandle triangleListModificationJobHandle;
+
         triangleListModificationJobHandle = triangleListModificationJob.Schedule((nX - 1) * (nY - 1) * (nZ - 1), default);
+
+        triangleListModificationJobHandle.Complete();
+
+        List<Vector3> vertexList = new List<Vector3>();
+        Dictionary<Vector3, int> vertexDict = new Dictionary<Vector3, int>();
+        List<Vector3> normalList = new List<Vector3>();
+        List<int> indexList = new List<int>();
+
+        CreateVertexIndexNormalListsFromTriangles(triangleQueue, ref vertexList, ref indexList, ref normalList, ref vertexDict, thresholdValue);
+
+        triangleQueue.Dispose();
+        flagList.Dispose();
+
+        Mesh mesh = new Mesh();
+
+        mesh.SetVertices(vertexList);
+        mesh.SetTriangles(indexList, 0); 
+        mesh.normals = NormalizedArrayFromList(normalList);
+
+        return mesh;
     }
 
     // Job which handles the construction of the mesh.
@@ -222,6 +238,138 @@ public class MarchingCubes : MonoBehaviour
             cubeFlags[7] = flagList[GetLinearIndex(i, j + 1, k + 1)];
 
             return cubeFlags;
+        }
+    }
+
+    Vector3[] NormalizedArrayFromList(List<Vector3> input)
+    {
+        Vector3[] output = new Vector3[input.Count];
+
+        for (int i = 0; i < input.Count; i++)
+        {
+            Vector3 normal = new Vector3();
+
+            normal.x = input[i].x;
+            normal.y = input[i].y;
+            normal.z = input[i].z;
+
+            output[i] = normal.normalized;
+        }
+
+        return output;
+    }
+
+    // This function takes the NativeQueue filled with all the triangles of a mesh and adds welded vertices, indices and summed vertex normals to the respective lists.
+    void CreateVertexIndexNormalListsFromTriangles(NativeQueue<Triangle> triangleList, ref List<Vector3> vertexList, ref List<int> indexList, ref List<Vector3> normalList, ref Dictionary<Vector3, int> vertexDictionary, float thresholdValue)
+    {
+        while(triangleList.Count > 0)
+        {
+            Triangle triangle = triangleList.Dequeue();
+
+            Vector3 edge0 = triangle.vertex1 - triangle.vertex0;
+            Vector3 edge1 = triangle.vertex2 - triangle.vertex0;
+
+            Vector3 triangleNormal = Vector3.Cross(edge1, edge0).normalized;
+
+            // FOR WELDED VERTICES
+            // For each vertex in the queue we chech whether it already exists in the dictionary, if so the correct index is added to the indexlist.
+            // if not the vertex is added to the dictionary.
+            // Normal vectors for vertices are summed for all faces they contribute to, these are later normalized to act as the interpolated vertex normals.
+            if (vertexWelding)
+            {
+                int vertexCount = vertexList.Count;
+
+                List<int> triangleIndexList = new List<int>();
+
+                if (vertexDictionary.ContainsKey(triangle.vertex0))
+                {
+                    triangleIndexList.Add(vertexDictionary[triangle.vertex0]);
+
+                    normalList[vertexDictionary[triangle.vertex0]] += triangleNormal;
+                }
+                else
+                {
+                    vertexList.Add(triangle.vertex0);
+                    vertexDictionary.Add(triangle.vertex0, vertexCount);
+                    triangleIndexList.Add(vertexCount);
+
+                    normalList.Add(triangleNormal);
+
+                    vertexCount++;
+                }
+
+                if (vertexDictionary.ContainsKey(triangle.vertex1))
+                {
+                    triangleIndexList.Add(vertexDictionary[triangle.vertex1]);
+
+                    normalList[vertexDictionary[triangle.vertex1]] += triangleNormal;
+                }
+                else
+                {
+                    vertexList.Add(triangle.vertex1);
+                    vertexDictionary.Add(triangle.vertex1, vertexCount);
+                    triangleIndexList.Add(vertexCount);
+
+                    normalList.Add(triangleNormal);
+
+                    vertexCount++;
+                }
+
+                if (vertexDictionary.ContainsKey(triangle.vertex2))
+                {
+                    triangleIndexList.Add(vertexDictionary[triangle.vertex2]);
+
+                    normalList[vertexDictionary[triangle.vertex2]] += triangleNormal;
+                }
+                else
+                {
+                    vertexList.Add(triangle.vertex2);
+                    vertexDictionary.Add(triangle.vertex2, vertexCount);
+                    triangleIndexList.Add(vertexCount);
+
+                    normalList.Add(triangleNormal);
+
+                    vertexCount++;
+                }
+
+                if (thresholdValue > 0f)
+                {
+                    indexList.Add(triangleIndexList[2]);
+                    indexList.Add(triangleIndexList[1]);
+                    indexList.Add(triangleIndexList[0]);
+                }
+                else
+                {
+                    indexList.Add(triangleIndexList[0]);
+                    indexList.Add(triangleIndexList[1]);
+                    indexList.Add(triangleIndexList[2]);
+                }
+            }
+            else
+            {
+                // FOR NON WELDED VERTICES            
+                int offset = indexList.Count;
+                vertexList.Add(triangle.vertex0);
+                vertexList.Add(triangle.vertex1);
+                vertexList.Add(triangle.vertex2);
+
+                normalList.Add(triangleNormal);
+                normalList.Add(triangleNormal);
+                normalList.Add(triangleNormal);
+
+                if (thresholdValue > 0f)
+                {
+                    indexList.Add(offset + 2);
+                    indexList.Add(offset + 1);
+                    indexList.Add(offset + 0);
+                }
+                else
+                {
+                    indexList.Add(offset + 0);
+                    indexList.Add(offset + 1);
+                    indexList.Add(offset + 2);
+                }
+            }
         }
     }
 
@@ -526,4 +674,11 @@ public struct flagNode
     public bool flag;
     public Vector3 position;
     public float fieldValue;
+}
+
+public struct Triangle
+{
+    public Vector3 vertex0;
+    public Vector3 vertex1;
+    public Vector3 vertex2;
 }
