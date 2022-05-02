@@ -39,20 +39,26 @@ public class Chunk
     int nZ;
     float gridSize;
 
+    public bool chunkVisible;
+
     public Chunk(Vector3 positionChunkCenter, int nX, int nY, int nZ, float gridSize, float thresholdValue, Material material)
     {
         this.positionChunkCenter = positionChunkCenter;
-        this.nX = nX;
-        this.nY = nY;
-        this.nZ = nZ;
+        this.nX = nX ;
+        this.nY = nY ;
+        this.nZ = nZ ;
         this.gridSize = gridSize;
 
-        scalarField = new ScalarFieldPoint[nX * nY * nZ];
+        this.chunkVisible = true;
 
-        for (int i = 0; i < nX * nY * nZ; i++)
+        /*
+        scalarField = new ScalarFieldPoint[this.nX * this.nY * this.nZ];
+
+        for (int i = 0; i < this.nX * this.nY * this.nZ; i++)
         {
             scalarField[i] = new ScalarFieldPoint();
         }
+        */
 
         chunkGameObject = new GameObject("Marching Cubes Chunk");
         chunkGameObject.AddComponent<MeshFilter>();
@@ -77,5 +83,16 @@ public class Chunk
         scalarField = marchingTerrain.GetComponent<NoiseTerrain>().InitializeScalarField(nX, nY, nZ, gridSize, positionChunkCenter);
     }
 
+    public void HideChunk()
+    {
+        chunkGameObject.SetActive(false);
+        chunkVisible = false;
+    }
+
+    public void ShowChunk()
+    {
+        chunkGameObject.SetActive(true);
+        chunkVisible = true;
+    }
 
 }

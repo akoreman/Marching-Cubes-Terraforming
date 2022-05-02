@@ -14,26 +14,34 @@ public class Setup : MonoBehaviour
 {
     GameObject marchingCubes;
 
+    public int initialChunkDimension;
+
 
     void Start()
     {
+
         marchingCubes = this.gameObject;
-        //marchingCubes.GetComponent<NoiseTerrain>().BuildScalarField(nX,nY,nZ, gridSize);
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(0f,0f,0f));
 
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(9.5f,0f,0f));
+        
+        int nX = marchingCubes.GetComponent<ChunkHandler>().nXPerChunk;
+        int nY = marchingCubes.GetComponent<ChunkHandler>().nYPerChunk;
+        int nZ = marchingCubes.GetComponent<ChunkHandler>().nZPerChunk;
+        
+        float gridSize = marchingCubes.GetComponent<ChunkHandler>().chunkGridSize;
+        
 
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(-9.5f,0f,0f));
-
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(0f,0f,9.5f));
-
-        marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(0f,0f,-9.5f));
-
+        for (int i = 0; i < initialChunkDimension; i++)
+            for (int j = 0; j < initialChunkDimension; j++)
+                for (int k = 0; k < initialChunkDimension; k++)
+                    marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(i*(nX-1)*gridSize,j*(nY-1)*gridSize,k*(nZ-1)*gridSize));
 
         
     }
 
-
+    void Update()
+    {
+        
+    }
 
     
 }

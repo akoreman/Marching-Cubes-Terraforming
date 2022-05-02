@@ -108,8 +108,10 @@ public class NoiseTerrain : MonoBehaviour
 
         public static float Noise(float x, float y, float z)
         {
-            if (Mathf.Sqrt(x * x + y * y + z * z) > 10.0f)
-                return 1.0f;
+            //if (y > 5.0f)
+            //    return 1.0f;
+        
+            //return 0.0f;
 
             var X = Mathf.FloorToInt(x) & 0xff;
             var Y = Mathf.FloorToInt(y) & 0xff;
