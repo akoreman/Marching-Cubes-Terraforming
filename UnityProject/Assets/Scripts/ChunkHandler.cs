@@ -12,13 +12,52 @@ public class ChunkHandler : MonoBehaviour
     public Material chunkMaterial;
     public float thresholdValue;
     
+    float chunkXDimension;
+    float chunkYDimension;
+
+    float chunkZDimension;
 
     Dictionary<Vector3, Chunk> chunkHashMap = new Dictionary<Vector3, Chunk>();
+
+    void Start()
+    {
+        chunkXDimension = nXPerChunk * chunkGridSize;
+        chunkYDimension = nYPerChunk * chunkGridSize;
+        chunkZDimension = nZPerChunk * chunkGridSize;
+    }
 
     public void AddChunk(Vector3 positionChunkCenter)
     {
         chunkHashMap.Add(positionChunkCenter, new Chunk(positionChunkCenter, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
     }
+
+    public void AddChunkFromPoint(Vector3 position)
+    {
+        
+        chunkHashMap.Add(positionChunkCenter, new Chunk(chunkGetNearestChunkCenter(position), nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
+    }
+
+
+    public Chunk GetChunkFromPosition(Vector3 position)
+    {
+        Vector3 nearestChunkCenter = GetNearestChunkCenter(position);
+
+        if (chunkHashMap.ContainsKey(nearestChunkCenter)) {return chunkHashMap[chunkHashMap]; }
+
+        return null;
+    }
+
+    public Vector3 GetNearestChunkCenter(Vector3 position)
+    {
+        Vector3 returnVector = new Vector3(0f,0f,0f);
+
+        returnVector.x = Mathf.Floor(position.x, chunkXDimension) * chunkXDimension;
+        returnVector.y = Mathf.Floor(position.y, chunkYDimension) * chunkYDimension;
+        returnVector.z = Mathf.Floor(position.z, chunkZDimension) * chunkZDimension;
+
+        return returnVector;
+    }
+
 
 }
 

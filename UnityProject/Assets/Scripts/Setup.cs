@@ -15,11 +15,14 @@ public class Setup : MonoBehaviour
     GameObject marchingCubes;
 
     public int initialChunkDimension;
+    public float drawDistance;
+
+    Camera camera;
 
 
     void Start()
     {
-
+        camera = camera.current;
         marchingCubes = this.gameObject;
 
         
@@ -40,7 +43,10 @@ public class Setup : MonoBehaviour
 
     void Update()
     {
+        Vector3 drawPoint = camera.transform.forward + camera.transform.forward.normalized * drawDistance;
+
         
+
     }
 
     
