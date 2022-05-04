@@ -347,6 +347,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialChunkDimension: 10
+  drawDistance: 25
+  camera: {fileID: 1288158630}
 --- !u!4 &1930594822
 Transform:
   m_ObjectHideFlags: 0

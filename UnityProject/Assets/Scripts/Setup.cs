@@ -17,36 +17,38 @@ public class Setup : MonoBehaviour
     public int initialChunkDimension;
     public float drawDistance;
 
-    Camera camera;
+    public Camera camera;
 
+    Transform cameraTransform;
+
+    void Awake()
+    {
+        cameraTransform = camera.transform;
+    }
 
     void Start()
     {
-        camera = camera.current;
         marchingCubes = this.gameObject;
 
-        
         int nX = marchingCubes.GetComponent<ChunkHandler>().nXPerChunk;
         int nY = marchingCubes.GetComponent<ChunkHandler>().nYPerChunk;
         int nZ = marchingCubes.GetComponent<ChunkHandler>().nZPerChunk;
         
         float gridSize = marchingCubes.GetComponent<ChunkHandler>().chunkGridSize;
         
-
         for (int i = 0; i < initialChunkDimension; i++)
             for (int j = 0; j < initialChunkDimension; j++)
                 for (int k = 0; k < initialChunkDimension; k++)
                     marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(i*(nX-1)*gridSize,j*(nY-1)*gridSize,k*(nZ-1)*gridSize));
-
-        
     }
 
     void Update()
     {
-        Vector3 drawPoint = camera.transform.forward + camera.transform.forward.normalized * drawDistance;
+        Vector3 drawPoint = cameraTransform.forward + cameraTransform.forward.normalized * drawDistance;
 
-        
+        Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(drawPoint);
 
+        if (chunk == null) { marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(drawPoint); }
     }
 
     
