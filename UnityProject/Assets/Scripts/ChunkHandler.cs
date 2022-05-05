@@ -21,14 +21,19 @@ public class ChunkHandler : MonoBehaviour
 
     void Start()
     {
-        chunkXDimension = nXPerChunk * chunkGridSize;
-        chunkYDimension = nYPerChunk * chunkGridSize;
-        chunkZDimension = nZPerChunk * chunkGridSize;
+        chunkXDimension = (nXPerChunk - 1) * chunkGridSize;
+        chunkYDimension = (nYPerChunk - 1) * chunkGridSize;
+        chunkZDimension = (nZPerChunk - 1) * chunkGridSize;
     }
 
     public void AddChunk(Vector3 positionChunkCenter)
     {
         chunkHashMap.Add(positionChunkCenter, new Chunk(positionChunkCenter, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
+    }
+
+    public void AddChunk(Vector3 position, Chunk chunk)
+    {
+        chunkHashMap.Add(position, chunk);
     }
 
     public void AddChunkFromPoint(Vector3 position)
@@ -48,15 +53,34 @@ public class ChunkHandler : MonoBehaviour
         return null;
     }
 
+    public Chunk GetChunkFromIndices(int[] index)
+    {
+        Vector3 position = new Vector3(index[0] * chunkXDimension, index[1] * chunkYDimension, index[2] * chunkZDimension);
+
+        return GetChunkFromPosition(position);
+    }
+
     public Vector3 GetNearestChunkCenter(Vector3 position)
     {
         Vector3 returnVector = new Vector3(0f,0f,0f);
 
-        returnVector.x = Mathf.Floor(position.x / chunkXDimension) * chunkXDimension;
-        returnVector.y = Mathf.Floor(position.y / chunkYDimension) * chunkYDimension;
-        returnVector.z = Mathf.Floor(position.z / chunkZDimension) * chunkZDimension;
+        returnVector.x = Mathf.Round(position.x / chunkXDimension) * chunkXDimension;
+        returnVector.y = Mathf.Round(position.y / chunkYDimension) * chunkYDimension;
+        returnVector.z = Mathf.Round(position.z / chunkZDimension) * chunkZDimension;
+
 
         return returnVector;
+    }
+
+    public int[] GetChunkIndex(Chunk chunk)
+    {
+        int [] returnArray = new int[3];
+
+        returnArray[0] = (int) Mathf.Round(chunk.positionChunkCenter.x / chunkXDimension);
+        returnArray[1] = (int) Mathf.Round(chunk.positionChunkCenter.y / chunkYDimension);
+        returnArray[2] = (int) Mathf.Round(chunk.positionChunkCenter.z / chunkZDimension);
+
+        return returnArray;
     }
 
 

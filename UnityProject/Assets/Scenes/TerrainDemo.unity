@@ -201,7 +201,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288158628}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 6.2, z: -10}
+  m_LocalPosition: {x: 0, y: -0.4, z: -0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -346,7 +346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b033a779a1fe14e86a3bcc3d730665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialChunkDimension: 10
+  initialChunkDimension: 0
   drawDistance: 25
   camera: {fileID: 1288158630}
 --- !u!4 &1930594822
