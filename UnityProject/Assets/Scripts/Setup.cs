@@ -121,15 +121,15 @@ public class Setup : MonoBehaviour
 
         chunkIndexRightUp = marchingCubes.GetComponent<ChunkHandler>().GetChunkIndex(chunk);
 
-        print(chunkIndexRightUp[0]);
+        //print(chunkIndexRightUp[0]);
 
-        for (int i = chunkIndexLeftDown[0] + 1; i < chunkIndexRightUp[0]; i++)
-            for (int j = chunkIndexLeftDown[1] + 1; j < chunkIndexRightUp[1]; j++)
-                for (int k = chunkIndexLeftDown[2] + 1; k < chunkIndexRightUp[2]; k++)
+        for (int i = Mathf.Min(chunkIndexLeftDown[0],chunkIndexRightUp[0]) ; i < Mathf.Max(chunkIndexLeftDown[0], chunkIndexRightUp[0]); i++)
+            for (int j =Mathf.Min(chunkIndexLeftDown[1],chunkIndexRightUp[1]) ; j < Mathf.Max(chunkIndexLeftDown[1], chunkIndexRightUp[1]); j++)
+                for (int k = Mathf.Min(chunkIndexLeftDown[2],chunkIndexRightUp[2]) ; k < Mathf.Max(chunkIndexLeftDown[2], chunkIndexRightUp[2]); k++)
                 {
                     Vector3 point = new Vector3(i*(nX-1)*gridSize, j*(nY-1)*gridSize, k*(nY-1)*gridSize);
 
-                    print(point);
+                    //print(point);
                     
                     chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(point);
 
