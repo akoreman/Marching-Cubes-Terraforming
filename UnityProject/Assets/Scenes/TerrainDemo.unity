@@ -378,7 +378,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288158628}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.4, z: -0.8}
+  m_LocalPosition: {x: 0, y: -0.4, z: -34.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -593,6 +593,7 @@ MonoBehaviour:
   initialChunkDimension: 5
   drawDistance: 10
   camera: {fileID: 1288158630}
+  padding: 0
 --- !u!4 &1930594822
 Transform:
   m_ObjectHideFlags: 0

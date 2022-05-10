@@ -76,9 +76,9 @@ public class ChunkHandler : MonoBehaviour
     {
         int [] returnArray = new int[3];
 
-        returnArray[0] = (int) Mathf.Round(chunk.positionChunkCenter.x / chunkXDimension);
-        returnArray[1] = (int) Mathf.Round(chunk.positionChunkCenter.y / chunkYDimension);
-        returnArray[2] = (int) Mathf.Round(chunk.positionChunkCenter.z / chunkZDimension);
+        returnArray[0] = (int) Mathf.Floor(chunk.positionChunkCenter.x / chunkXDimension);
+        returnArray[1] = (int) Mathf.Floor(chunk.positionChunkCenter.y / chunkYDimension);
+        returnArray[2] = (int) Mathf.Floor(chunk.positionChunkCenter.z / chunkZDimension);
 
         return returnArray;
     }

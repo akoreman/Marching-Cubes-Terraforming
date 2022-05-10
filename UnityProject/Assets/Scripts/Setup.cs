@@ -19,6 +19,8 @@ public class Setup : MonoBehaviour
 
     public Camera camera;
 
+    public int padding;
+
     Transform cameraTransform;
     
     float cameraPOV;
@@ -51,9 +53,16 @@ public class Setup : MonoBehaviour
             for (int j = 0; j < initialChunkDimension; j++)
                 for (int k = 0; k < initialChunkDimension; k++)
                     marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(i*(nX-1)*gridSize,j*(nY-1)*gridSize,k*(nZ-1)*gridSize));
+
+        UpdateChunksInView();
     }
 
     void Update()
+    {
+        UpdateChunksInView();
+    }
+
+    void UpdateChunksInView()
     {
         cameraPOV = camera.fieldOfView;
         cameraAspect = camera.aspect;
@@ -69,8 +78,6 @@ public class Setup : MonoBehaviour
 
         Chunk chunk;
         
-
-
         int[] chunkIndexLeftDown;
         Vector3 leftDownPoint = midPoint - cameraTransform.up.normalized * height - cameraTransform.right * width;
         
@@ -79,12 +86,10 @@ public class Setup : MonoBehaviour
         if (chunk == null) 
         { 
             marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(leftDownPoint); 
-            chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftDownPoint);
+            chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftDownPoint); 
         }
 
         chunkIndexLeftDown = marchingCubes.GetComponent<ChunkHandler>().GetChunkIndex(chunk);
-
-
 
         Vector3 rightDownPoint = midPoint - cameraTransform.up.normalized * height + cameraTransform.right * width;
 
@@ -96,7 +101,6 @@ public class Setup : MonoBehaviour
              chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(rightDownPoint);
         }
 
-
         Vector3 leftUpPoint = midPoint + cameraTransform.up.normalized * height - cameraTransform.right * width;
 
         chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftUpPoint);
@@ -106,7 +110,6 @@ public class Setup : MonoBehaviour
             marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(leftUpPoint); 
             chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftUpPoint);
         }
-
 
         int[] chunkIndexRightUp;
         Vector3 rightUpPoint = midPoint + cameraTransform.up.normalized * height + cameraTransform.right * width;
@@ -119,22 +122,23 @@ public class Setup : MonoBehaviour
             chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(rightUpPoint);
         }
 
+
         chunkIndexRightUp = marchingCubes.GetComponent<ChunkHandler>().GetChunkIndex(chunk);
 
-        //print(chunkIndexRightUp[0]);
 
-        for (int i = Mathf.Min(chunkIndexLeftDown[0],chunkIndexRightUp[0]) ; i < Mathf.Max(chunkIndexLeftDown[0], chunkIndexRightUp[0]); i++)
-            for (int j =Mathf.Min(chunkIndexLeftDown[1],chunkIndexRightUp[1]) ; j < Mathf.Max(chunkIndexLeftDown[1], chunkIndexRightUp[1]); j++)
-                for (int k = Mathf.Min(chunkIndexLeftDown[2],chunkIndexRightUp[2]) ; k < Mathf.Max(chunkIndexLeftDown[2], chunkIndexRightUp[2]); k++)
+
+        for (int i = Mathf.Min(chunkIndexLeftDown[0],chunkIndexRightUp[0]) - padding; i <= Mathf.Max(chunkIndexLeftDown[0], chunkIndexRightUp[0]) + padding; i++)
+            for (int j =Mathf.Min(chunkIndexLeftDown[1],chunkIndexRightUp[1]) - padding; j <= Mathf.Max(chunkIndexLeftDown[1], chunkIndexRightUp[1]) + padding; j++)
+                for (int k = Mathf.Min(chunkIndexLeftDown[2],chunkIndexRightUp[2]) - padding; k <= Mathf.Max(chunkIndexLeftDown[2], chunkIndexRightUp[2]) + padding; k++)
                 {
                     Vector3 point = new Vector3(i*(nX-1)*gridSize, j*(nY-1)*gridSize, k*(nY-1)*gridSize);
 
-                    //print(point);
-                    
                     chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(point);
 
                     if (chunk == null) { marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(point); }
                 }
+
+
 
     }
 
