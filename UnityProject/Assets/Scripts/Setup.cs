@@ -10,6 +10,10 @@ using Unity.Mathematics;
 
 // This script sets up the field and updates the vertices.
 
+
+///TODO///
+// look into using some sort of activechunks list,queue,etc to handle de-spawning/culling of chunks
+/////////
 public class Setup : MonoBehaviour
 {
     GameObject marchingCubes;
@@ -59,9 +63,19 @@ public class Setup : MonoBehaviour
 
     void Update()
     {
+        ClearActiveChunkDictionnary();
         UpdateChunksInView();
     }
 
+    void ClearActiveChunkDictionnary()
+    {
+        foreach (KeyValuePair<Vector3, Chunk> x in marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap)
+        {
+            x.Value.HideChunk();
+        }
+
+        marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap = new Dictionary<Vector3, Chunk>();   
+    }
     void UpdateChunksInView()
     {
         cameraPOV = camera.fieldOfView;
@@ -89,6 +103,11 @@ public class Setup : MonoBehaviour
             chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftDownPoint); 
         }
 
+        chunk.ShowChunk();
+        marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap.Add(leftDownPoint, chunk);
+
+
+
         chunkIndexLeftDown = marchingCubes.GetComponent<ChunkHandler>().GetChunkIndex(chunk);
 
         Vector3 rightDownPoint = midPoint - cameraTransform.up.normalized * height + cameraTransform.right * width;
@@ -101,6 +120,11 @@ public class Setup : MonoBehaviour
              chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(rightDownPoint);
         }
 
+        chunk.ShowChunk();
+        marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap.Add(rightDownPoint, chunk);
+
+
+
         Vector3 leftUpPoint = midPoint + cameraTransform.up.normalized * height - cameraTransform.right * width;
 
         chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftUpPoint);
@@ -110,6 +134,10 @@ public class Setup : MonoBehaviour
             marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(leftUpPoint); 
             chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftUpPoint);
         }
+
+        chunk.ShowChunk();
+        marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap.Add(leftUpPoint, chunk);
+
 
         int[] chunkIndexRightUp;
         Vector3 rightUpPoint = midPoint + cameraTransform.up.normalized * height + cameraTransform.right * width;
@@ -121,6 +149,9 @@ public class Setup : MonoBehaviour
             marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(rightUpPoint); 
             chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(rightUpPoint);
         }
+
+        chunk.ShowChunk();
+        marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap.Add(rightUpPoint, chunk);
 
 
         chunkIndexRightUp = marchingCubes.GetComponent<ChunkHandler>().GetChunkIndex(chunk);
@@ -135,7 +166,14 @@ public class Setup : MonoBehaviour
 
                     chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(point);
 
-                    if (chunk == null) { marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(point); }
+                    if (chunk == null)
+                    { 
+                        marchingCubes.GetComponent<ChunkHandler>().AddChunkFromPoint(point); 
+                        chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(point);
+                    }
+
+                    chunk.ShowChunk();
+                    marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap.Add(point, chunk);
                 }
 
 

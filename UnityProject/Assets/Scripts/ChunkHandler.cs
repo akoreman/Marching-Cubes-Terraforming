@@ -18,6 +18,7 @@ public class ChunkHandler : MonoBehaviour
     float chunkZDimension;
 
     Dictionary<Vector3, Chunk> chunkHashMap = new Dictionary<Vector3, Chunk>();
+    public Dictionary<Vector3, Chunk> activeChunkHashMap = new Dictionary<Vector3, Chunk>();
 
     void Start()
     {

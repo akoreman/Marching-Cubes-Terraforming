@@ -590,10 +590,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b033a779a1fe14e86a3bcc3d730665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialChunkDimension: 5
+  initialChunkDimension: 0
   drawDistance: 10
   camera: {fileID: 1288158630}
-  padding: 0
+  padding: 2
 --- !u!4 &1930594822
 Transform:
   m_ObjectHideFlags: 0
