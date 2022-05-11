@@ -3,6 +3,7 @@ Early WIP. Terraforming game prototype based on my implementation of the marchin
 
 **Currently Implemented**
 - Using the marching cubes algorithm to visualise noise functions.
+- Spawning and de-spawning chunks to generate infinitely large marching cubes worlds.
 
 
 # Screenshots
