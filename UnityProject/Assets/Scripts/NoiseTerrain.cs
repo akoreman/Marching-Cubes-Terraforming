@@ -84,6 +84,7 @@ public class NoiseTerrain : MonoBehaviour
             scalarFieldPoint.position = new Vector3(position.x * gridSize, position.y * gridSize, position.z * gridSize) + centerOffset;
             //scalarFieldPoint.potential = scalarFieldPoint.position.y;
             scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
+            //scalarFieldPoint.potential = GetNoiseAt(scalarFieldPoint.position.x, scalarFieldPoint.position.z, 1.0f, 1.0f, 5, 1.0f, 1.0f);
 
             ScalarFieldWriter.TryAdd(i, scalarFieldPoint);
         }
@@ -132,6 +133,26 @@ public class NoiseTerrain : MonoBehaviour
                                    Lerp(u, Grad(perm[AB], x, y - 1, z), Grad(perm[BB], x - 1, y - 1, z))),
                            Lerp(v, Lerp(u, Grad(perm[AA + 1], x, y, z - 1), Grad(perm[BA + 1], x - 1, y, z - 1)),
                                    Lerp(u, Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1))));
+        }
+
+        public static float GetNoiseAt(float x, float z, float scale, float heightMultiplier, int octaves, float persistance, float lacunarity)
+        {
+            float PerlinValue = 0f;
+            float amplitude = 1f;
+            float frequency = 1f;
+
+            for(int i = 0; i < octaves; i++)
+            {
+                // Get the perlin value at that octave and add it to the sum
+                PerlinValue += Mathf.PerlinNoise(x * frequency, z * frequency) * amplitude;
+                
+                // Decrease the amplitude and the frequency
+                amplitude *= persistance;
+                frequency *= lacunarity;
+            }
+            
+            // Return the noise value
+            return PerlinValue * heightMultiplier;
         }
 
         static float Grad(int hash, float x, float y, float z)

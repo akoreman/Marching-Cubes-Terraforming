@@ -77,9 +77,9 @@ public class ChunkHandler : MonoBehaviour
     {
         int [] returnArray = new int[3];
 
-        returnArray[0] = (int) Mathf.Floor(chunk.positionChunkCenter.x / chunkXDimension);
-        returnArray[1] = (int) Mathf.Floor(chunk.positionChunkCenter.y / chunkYDimension);
-        returnArray[2] = (int) Mathf.Floor(chunk.positionChunkCenter.z / chunkZDimension);
+        returnArray[0] = Mathf.RoundToInt(chunk.positionChunkCenter.x / chunkXDimension);
+        returnArray[1] = Mathf.RoundToInt(chunk.positionChunkCenter.y / chunkYDimension);
+        returnArray[2] = Mathf.RoundToInt(chunk.positionChunkCenter.z / chunkZDimension);
 
         return returnArray;
     }
@@ -116,14 +116,6 @@ public class Chunk
 
         this.chunkVisible = true;
 
-        /*
-        scalarField = new ScalarFieldPoint[this.nX * this.nY * this.nZ];
-
-        for (int i = 0; i < this.nX * this.nY * this.nZ; i++)
-        {
-            scalarField[i] = new ScalarFieldPoint();
-        }
-        */
 
         chunkGameObject = new GameObject("Marching Cubes Chunk");
         chunkGameObject.AddComponent<MeshFilter>();
@@ -141,6 +133,13 @@ public class Chunk
     public void RebuildChunkMesh()
     {
         mesh = marchingTerrain.GetComponent<MarchingCubes>().GetMeshFromField(scalarField, thresholdValue);
+    }
+
+    public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius)
+    {
+        Vector3Int fieldPointPosition = new Vector3Int(Mathf.RoundToInt(localPosition.x /  gridSize), Mathf.RoundToInt(localPosition.y / gridSize), Mathf.RoundToInt(localPosition.z / gridSize));
+
+        
     }
 
     public void InitializeScalarField()
