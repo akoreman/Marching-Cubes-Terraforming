@@ -21,6 +21,8 @@ public class Setup : MonoBehaviour
     public int initialChunkDimension;
     public float drawDistance;
 
+    public float clickDistance;
+
     public Camera camera;
 
     public int padding;
@@ -65,6 +67,17 @@ public class Setup : MonoBehaviour
     {
         ClearActiveChunkDictionnary();
         UpdateChunksInView();
+
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
+
+
+            Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
+
+            chunk.ChangeScalarField(0.1f, clickPoint, 10);
+
+        }
     }
 
     void ClearActiveChunkDictionnary()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ChunkHandler : MonoBehaviour
@@ -94,6 +95,8 @@ public class Chunk
 
     public ScalarFieldPoint[] scalarField;
 
+    public Dictionary<Vector3, ScalarFieldPoint> scalarFieldDict;
+
     public float thresholdValue;
 
     GameObject chunkGameObject;
@@ -125,6 +128,9 @@ public class Chunk
         marchingTerrain = GameObject.Find("MarchingTerrain");
 
         InitializeScalarField();
+
+        BuildFieldPointDictionary();
+
         RebuildChunkMesh();
 
         chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
@@ -137,14 +143,30 @@ public class Chunk
 
     public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius)
     {
-        Vector3Int fieldPointPosition = new Vector3Int(Mathf.RoundToInt(localPosition.x /  gridSize), Mathf.RoundToInt(localPosition.y / gridSize), Mathf.RoundToInt(localPosition.z / gridSize));
-
+        Vector3 fieldPointPosition = new Vector3(Mathf.RoundToInt(localPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(localPosition.y / gridSize) * gridSize, Mathf.RoundToInt(localPosition.z / gridSize) * gridSize);
         
+
+        ScalarFieldPoint changePoint = scalarFieldDict[fieldPointPosition];
+        changePoint.potential += valueChange;
+
+        scalarField = scalarFieldDict.Values.ToArray();
+
+        RebuildChunkMesh();
     }
 
     public void InitializeScalarField()
     {
         scalarField = marchingTerrain.GetComponent<NoiseTerrain>().InitializeScalarField(nX, nY, nZ, gridSize, positionChunkCenter);
+    }
+
+    public void BuildFieldPointDictionary()
+    {
+        scalarFieldDict = new Dictionary<Vector3, ScalarFieldPoint>();
+
+        foreach (ScalarFieldPoint x in scalarField)
+        {
+            scalarFieldDict.Add(x.position, x);
+        }
     }
 
     public void HideChunk()
