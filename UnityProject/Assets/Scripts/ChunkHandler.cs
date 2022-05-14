@@ -66,9 +66,9 @@ public class ChunkHandler : MonoBehaviour
     {
         Vector3 returnVector = new Vector3(0f,0f,0f);
 
-        returnVector.x = Mathf.Round(position.x / chunkXDimension) * chunkXDimension;
-        returnVector.y = Mathf.Round(position.y / chunkYDimension) * chunkYDimension;
-        returnVector.z = Mathf.Round(position.z / chunkZDimension) * chunkZDimension;
+        returnVector.x = Mathf.Floor(position.x / chunkXDimension) * chunkXDimension;
+        returnVector.y = Mathf.Floor(position.y / chunkYDimension) * chunkYDimension;
+        returnVector.z = Mathf.Floor(position.z / chunkZDimension) * chunkZDimension;
 
 
         return returnVector;
@@ -78,9 +78,9 @@ public class ChunkHandler : MonoBehaviour
     {
         int [] returnArray = new int[3];
 
-        returnArray[0] = Mathf.RoundToInt(chunk.positionChunkCenter.x / chunkXDimension);
-        returnArray[1] = Mathf.RoundToInt(chunk.positionChunkCenter.y / chunkYDimension);
-        returnArray[2] = Mathf.RoundToInt(chunk.positionChunkCenter.z / chunkZDimension);
+        returnArray[0] = Mathf.FloorToInt(chunk.positionChunkCenter.x / chunkXDimension);
+        returnArray[1] = Mathf.FloorToInt(chunk.positionChunkCenter.y / chunkYDimension);
+        returnArray[2] = Mathf.FloorToInt(chunk.positionChunkCenter.z / chunkZDimension);
 
         return returnArray;
     }
@@ -132,13 +132,12 @@ public class Chunk
         BuildFieldPointDictionary();
 
         RebuildChunkMesh();
-
-        chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
     }
 
     public void RebuildChunkMesh()
     {
         mesh = marchingTerrain.GetComponent<MarchingCubes>().GetMeshFromField(scalarField, thresholdValue);
+        chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
     }
 
     public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius)
@@ -147,8 +146,10 @@ public class Chunk
         
 
         ScalarFieldPoint changePoint = scalarFieldDict[fieldPointPosition];
+        scalarFieldDict.Remove(fieldPointPosition);
         changePoint.potential += valueChange;
 
+        scalarFieldDict.Add(fieldPointPosition,changePoint);
         scalarField = scalarFieldDict.Values.ToArray();
 
         RebuildChunkMesh();

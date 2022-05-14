@@ -592,7 +592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialChunkDimension: 0
   drawDistance: 10
-  clickDistance: 5
+  clickDistance: 0.25
   camera: {fileID: 1288158630}
   padding: 2
 --- !u!4 &1930594822
