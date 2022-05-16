@@ -8,6 +8,7 @@ public class ChunkHandler : MonoBehaviour
     public int nXPerChunk;
     public int nYPerChunk;
     public int nZPerChunk;
+
     public float chunkGridSize;
 
     public Material chunkMaterial;
@@ -15,7 +16,6 @@ public class ChunkHandler : MonoBehaviour
     
     float chunkXDimension;
     float chunkYDimension;
-
     float chunkZDimension;
 
     Dictionary<Vector3, Chunk> chunkHashMap = new Dictionary<Vector3, Chunk>();
@@ -28,33 +28,39 @@ public class ChunkHandler : MonoBehaviour
         chunkZDimension = (nZPerChunk - 1) * chunkGridSize;
     }
 
-    public void AddChunk(Vector3 positionChunkCenter)
+
+    // Add a new chunk to chunkHashMap by specifying the (0,0,0) corner position, note there is no check to see whether there is a collision.
+    public void AddChunk(Vector3 positionChunkCorner)
     {
-        chunkHashMap.Add(positionChunkCenter, new Chunk(positionChunkCenter, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
+        chunkHashMap.Add(positionChunkCorner, new Chunk(positionChunkCorner, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
     }
 
+    /*
     public void AddChunk(Vector3 position, Chunk chunk)
     {
         chunkHashMap.Add(position, chunk);
     }
+    */
 
+    // Given a point in 3D space, add a new chunk to chunkHashMap which encapsulates that point.
     public void AddChunkFromPoint(Vector3 position)
     {
-        Vector3 positionChunkCenter = GetNearestChunkCenter(position);
+        Vector3 positionChunkCorner = GetNearestChunkCorner(position);
 
-        chunkHashMap.Add(positionChunkCenter, new Chunk(positionChunkCenter, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
+        chunkHashMap.Add(positionChunkCorner, new Chunk(positionChunkCorner, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
     }
 
-
+    // Given a point in 3D space return the chunk which encapsulates that point (if present), other return null.
     public Chunk GetChunkFromPosition(Vector3 position)
     {
-        Vector3 nearestChunkCenter = GetNearestChunkCenter(position);
+        Vector3 nearestChunkCenter = GetNearestChunkCorner(position);
 
         if (chunkHashMap.ContainsKey(nearestChunkCenter)) {return chunkHashMap[nearestChunkCenter]; }
 
         return null;
     }
 
+    // Given the indices of a chunk, return the chunk.
     public Chunk GetChunkFromIndices(int[] index)
     {
         Vector3 position = new Vector3(index[0] * chunkXDimension, index[1] * chunkYDimension, index[2] * chunkZDimension);
@@ -62,7 +68,8 @@ public class ChunkHandler : MonoBehaviour
         return GetChunkFromPosition(position);
     }
 
-    public Vector3 GetNearestChunkCenter(Vector3 position)
+    // Given a point return the position of the corner of the chunk that encapsulates it.
+    public Vector3 GetNearestChunkCorner(Vector3 position)
     {
         Vector3 returnVector = new Vector3(0f,0f,0f);
 
@@ -74,23 +81,24 @@ public class ChunkHandler : MonoBehaviour
         return returnVector;
     }
 
+    // Given a chunk return it's chunk index.
     public int[] GetChunkIndex(Chunk chunk)
     {
         int [] returnArray = new int[3];
 
-        returnArray[0] = Mathf.FloorToInt(chunk.positionChunkCenter.x / chunkXDimension);
-        returnArray[1] = Mathf.FloorToInt(chunk.positionChunkCenter.y / chunkYDimension);
-        returnArray[2] = Mathf.FloorToInt(chunk.positionChunkCenter.z / chunkZDimension);
+        returnArray[0] = Mathf.FloorToInt(chunk.positionChunkCorner.x / chunkXDimension);
+        returnArray[1] = Mathf.FloorToInt(chunk.positionChunkCorner.y / chunkYDimension);
+        returnArray[2] = Mathf.FloorToInt(chunk.positionChunkCorner.z / chunkZDimension);
 
         return returnArray;
     }
 
-
 }
 
+// Class which handles the chunks.
 public class Chunk
 {
-    public Vector3 positionChunkCenter;
+    public Vector3 positionChunkCorner;
     public Mesh mesh;
 
     public ScalarFieldPoint[] scalarField;
@@ -109,9 +117,9 @@ public class Chunk
 
     public bool chunkVisible;
 
-    public Chunk(Vector3 positionChunkCenter, int nX, int nY, int nZ, float gridSize, float thresholdValue, Material material)
+    public Chunk(Vector3 positionChunkCorner, int nX, int nY, int nZ, float gridSize, float thresholdValue, Material material)
     {
-        this.positionChunkCenter = positionChunkCenter;
+        this.positionChunkCorner = positionChunkCorner;
         this.nX = nX ;
         this.nY = nY ;
         this.nZ = nZ ;
@@ -134,12 +142,14 @@ public class Chunk
         RebuildChunkMesh();
     }
 
+    // Re-marching cube the mesh given the scalarfield of the chunk.
     public void RebuildChunkMesh()
     {
         mesh = marchingTerrain.GetComponent<MarchingCubes>().GetMeshFromField(scalarField, thresholdValue);
         chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
     }
 
+    // WIP
     public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius)
     {
         Vector3 fieldPointPosition = new Vector3(Mathf.RoundToInt(localPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(localPosition.y / gridSize) * gridSize, Mathf.RoundToInt(localPosition.z / gridSize) * gridSize);
@@ -157,7 +167,7 @@ public class Chunk
 
     public void InitializeScalarField()
     {
-        scalarField = marchingTerrain.GetComponent<NoiseTerrain>().InitializeScalarField(nX, nY, nZ, gridSize, positionChunkCenter);
+        scalarField = marchingTerrain.GetComponent<NoiseTerrain>().InitializeScalarField(nX, nY, nZ, gridSize, positionChunkCorner);
     }
 
     public void BuildFieldPointDictionary()
