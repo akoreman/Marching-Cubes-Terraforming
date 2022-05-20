@@ -7,7 +7,7 @@ public class CameraHandler : MonoBehaviour
     //Camera camera;
     float movementSpeed;
     float rotationSpeed;
-    // Start is called before the first frame update
+
     void Awake()
     {
         //camera = Camera.current;

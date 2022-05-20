@@ -10,10 +10,6 @@ using Unity.Mathematics;
 
 // This script sets up the field and updates the vertices.
 
-
-///TODO///
-// look into using some sort of activechunks list,queue,etc to handle de-spawning/culling of chunks
-/////////
 public class Setup : MonoBehaviour
 {
     GameObject marchingCubes;
@@ -32,6 +28,7 @@ public class Setup : MonoBehaviour
     float cameraPOV;
     float cameraAspect;
 
+    // Get POV and aspect ratio of the active camera.
     void Awake()
     {
         cameraTransform = camera.transform;
@@ -55,6 +52,8 @@ public class Setup : MonoBehaviour
         
         gridSize = marchingCubes.GetComponent<ChunkHandler>().chunkGridSize;
         
+        // Spawn the chunks which are loaded on startup.
+
         for (int i = 0; i < initialChunkDimension; i++)
             for (int j = 0; j < initialChunkDimension; j++)
                 for (int k = 0; k < initialChunkDimension; k++)
@@ -68,6 +67,7 @@ public class Setup : MonoBehaviour
         ClearActiveChunkDictionnary();
         UpdateChunksInView();
 
+        // Handles the input which is used to change the underlying scalar field.
         if (Input.GetKey(KeyCode.LeftAlt))
         {
             Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
@@ -76,29 +76,32 @@ public class Setup : MonoBehaviour
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
 
             chunk.ChangeScalarField(2f, clickPoint, 10);
-
         }
     }
 
+    // Method to first hide all chunks in the active chunk dictionary and clear the active chunk dictionary.
     void ClearActiveChunkDictionnary()
     {
         foreach (KeyValuePair<Vector3, Chunk> x in marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap)
-        {
             x.Value.HideChunk();
-        }
 
         marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap = new Dictionary<Vector3, Chunk>();   
     }
+
+    // Method to calculate which chunks are within view, show those and add them to the active chunk dictionary.
     void UpdateChunksInView()
     {
         cameraPOV = camera.fieldOfView;
         cameraAspect = camera.aspect;
 
+        // Convert the POV to degrees.
         cameraPOV *= Mathf.PI/180;
 
+        // Calculate the height and witdh of the draw volume.
         float height = Mathf.Tan(cameraPOV / 2 ) * drawDistance;
         float width = height * cameraAspect;
 
+        // Calcute the corner points of the draw volume and find or spawn the corresonding chunks.
         Vector3 midPoint = cameraTransform.position + cameraTransform.forward.normalized * drawDistance;
         Vector3 midUpPoint = midPoint + cameraTransform.up.normalized * height;
         Vector3 midDownPoint = midPoint - cameraTransform.up.normalized * height;
@@ -170,7 +173,7 @@ public class Setup : MonoBehaviour
         chunkIndexRightUp = marchingCubes.GetComponent<ChunkHandler>().GetChunkIndex(chunk);
 
 
-
+        // Find and draw the chunks to connect the corner points found above.
         for (int i = Mathf.Min(chunkIndexLeftDown[0],chunkIndexRightUp[0]) - padding; i <= Mathf.Max(chunkIndexLeftDown[0], chunkIndexRightUp[0]) + padding; i++)
             for (int j =Mathf.Min(chunkIndexLeftDown[1],chunkIndexRightUp[1]) - padding; j <= Mathf.Max(chunkIndexLeftDown[1], chunkIndexRightUp[1]) + padding; j++)
                 for (int k = Mathf.Min(chunkIndexLeftDown[2],chunkIndexRightUp[2]) - padding; k <= Mathf.Max(chunkIndexLeftDown[2], chunkIndexRightUp[2]) + padding; k++)

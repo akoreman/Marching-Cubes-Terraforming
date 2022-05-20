@@ -654,4 +654,4 @@ MonoBehaviour:
   nZPerChunk: 20
   chunkGridSize: 10
   chunkMaterial: {fileID: 2100000, guid: 6c776e55273c5b0468d5833c877a3e76, type: 2}
-  thresholdValue: 3
+  thresholdValue: 0.5
