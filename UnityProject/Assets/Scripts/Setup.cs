@@ -108,7 +108,7 @@ public class Setup : MonoBehaviour
 
         Chunk chunk;
         
-        int[] chunkIndexLeftDown;
+        Vector3Int chunkIndexLeftDown;
         Vector3 leftDownPoint = midPoint - cameraTransform.up.normalized * height - cameraTransform.right * width;
         
         chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(leftDownPoint);
@@ -155,7 +155,7 @@ public class Setup : MonoBehaviour
         marchingCubes.GetComponent<ChunkHandler>().activeChunkHashMap.Add(leftUpPoint, chunk);
 
 
-        int[] chunkIndexRightUp;
+        Vector3Int chunkIndexRightUp;
         Vector3 rightUpPoint = midPoint + cameraTransform.up.normalized * height + cameraTransform.right * width;
 
         chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(rightUpPoint);
@@ -174,9 +174,9 @@ public class Setup : MonoBehaviour
 
 
         // Find and draw the chunks to connect the corner points found above.
-        for (int i = Mathf.Min(chunkIndexLeftDown[0],chunkIndexRightUp[0]) - padding; i <= Mathf.Max(chunkIndexLeftDown[0], chunkIndexRightUp[0]) + padding; i++)
-            for (int j =Mathf.Min(chunkIndexLeftDown[1],chunkIndexRightUp[1]) - padding; j <= Mathf.Max(chunkIndexLeftDown[1], chunkIndexRightUp[1]) + padding; j++)
-                for (int k = Mathf.Min(chunkIndexLeftDown[2],chunkIndexRightUp[2]) - padding; k <= Mathf.Max(chunkIndexLeftDown[2], chunkIndexRightUp[2]) + padding; k++)
+        for (int i = Mathf.Min(chunkIndexLeftDown.x,chunkIndexRightUp.x) - padding; i <= Mathf.Max(chunkIndexLeftDown.x, chunkIndexRightUp.x) + padding; i++)
+            for (int j =Mathf.Min(chunkIndexLeftDown.y,chunkIndexRightUp.y) - padding; j <= Mathf.Max(chunkIndexLeftDown.y, chunkIndexRightUp.y) + padding; j++)
+                for (int k = Mathf.Min(chunkIndexLeftDown.z,chunkIndexRightUp.z) - padding; k <= Mathf.Max(chunkIndexLeftDown.z, chunkIndexRightUp.z) + padding; k++)
                 {
                     Vector3 point = new Vector3(i*(nX-1)*gridSize, j*(nY-1)*gridSize, k*(nY-1)*gridSize);
 

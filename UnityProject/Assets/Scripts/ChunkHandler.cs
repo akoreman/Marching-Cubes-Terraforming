@@ -61,9 +61,9 @@ public class ChunkHandler : MonoBehaviour
     }
 
     // Given the indices of a chunk, return the chunk.
-    public Chunk GetChunkFromIndices(int[] index)
+    public Chunk GetChunkFromIndices(Vector3Int index)
     {
-        Vector3 position = new Vector3(index[0] * chunkXDimension, index[1] * chunkYDimension, index[2] * chunkZDimension);
+        Vector3 position = new Vector3(index.x * chunkXDimension, index.y * chunkYDimension, index.z * chunkZDimension);
 
         return GetChunkFromPosition(position);
     }
@@ -82,15 +82,26 @@ public class ChunkHandler : MonoBehaviour
     }
 
     // Given a chunk return it's chunk index.
-    public int[] GetChunkIndex(Chunk chunk)
+    public Vector3Int GetChunkIndex(Chunk chunk)
     {
-        int [] returnArray = new int[3];
+        Vector3Int returnVector = Vector3Int.zero;
 
-        returnArray[0] = Mathf.FloorToInt(chunk.positionChunkCorner.x / chunkXDimension);
-        returnArray[1] = Mathf.FloorToInt(chunk.positionChunkCorner.y / chunkYDimension);
-        returnArray[2] = Mathf.FloorToInt(chunk.positionChunkCorner.z / chunkZDimension);
+        returnVector.x = Mathf.FloorToInt(chunk.positionChunkCorner.x / chunkXDimension);
+        returnVector.y = Mathf.FloorToInt(chunk.positionChunkCorner.y / chunkYDimension);
+        returnVector.z = Mathf.FloorToInt(chunk.positionChunkCorner.z / chunkZDimension);
 
-        return returnArray;
+        return returnVector;
+    }
+
+    public Vector3Int GetChunkIndex(Vector3 positionChunkCorner)
+    {
+        Vector3Int returnVector = Vector3Int.zero;
+
+        returnVector.x = Mathf.FloorToInt(positionChunkCorner.x / chunkXDimension);
+        returnVector.y = Mathf.FloorToInt(positionChunkCorner.y / chunkYDimension);
+        returnVector.z = Mathf.FloorToInt(positionChunkCorner.z / chunkZDimension);
+
+        return returnVector;
     }
 
 }
@@ -110,10 +121,14 @@ public class Chunk
     GameObject chunkGameObject;
     GameObject marchingTerrain;
 
+    GameObject chunkHandler;
+
     int nX;
     int nY;
     int nZ;
     float gridSize;
+
+    Vector3Int chunkIndex;
 
     public bool chunkVisible;
 
@@ -134,6 +149,9 @@ public class Chunk
         chunkGameObject.GetComponent<Renderer>().material = material;
 
         marchingTerrain = GameObject.Find("MarchingTerrain");
+ 
+
+        this.chunkIndex = marchingTerrain.GetComponent<ChunkHandler>().GetChunkIndex(this);
 
         InitializeScalarField();
 
@@ -190,6 +208,55 @@ public class Chunk
     {
         chunkGameObject.SetActive(true);
         chunkVisible = true;
+    }
+
+    public Chunk GetNeighbour(string direction)
+    {
+        Vector3Int returnIndex = this.chunkIndex;
+        
+        if (direction == "up") 
+        { 
+            returnIndex.y += 1;
+            
+            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+        }
+
+        if (direction == "down") 
+        { 
+            returnIndex.y -= 1;
+            
+            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+        }
+
+        if (direction == "forward") 
+        { 
+            returnIndex.x += 1;
+            
+            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+        }
+
+        if (direction == "back") 
+        { 
+            returnIndex.x -= 1;
+            
+            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+        }
+
+        if (direction == "left") 
+        { 
+            returnIndex.y += 1;
+            
+            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+        }
+
+        if (direction == "right") 
+        { 
+            returnIndex.y -= 1;
+            
+            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+        }
+
+        return null;
     }
 
 }
