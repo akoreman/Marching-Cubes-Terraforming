@@ -168,11 +168,11 @@ public class Chunk
     }
 
     // WIP
-    public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius)
+    public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius, bool overlap)
     {
+        Vector3Int fieldPointIndex = new Vector3Int(Mathf.RoundToInt(localPosition.x /  gridSize), Mathf.RoundToInt(localPosition.y /  gridSize), Mathf.RoundToInt(localPosition.z /  gridSize));
         Vector3 fieldPointPosition = new Vector3(Mathf.RoundToInt(localPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(localPosition.y / gridSize) * gridSize, Mathf.RoundToInt(localPosition.z / gridSize) * gridSize);
         
-
         ScalarFieldPoint changePoint = scalarFieldDict[fieldPointPosition];
         scalarFieldDict.Remove(fieldPointPosition);
         changePoint.potential += valueChange;
@@ -181,6 +181,43 @@ public class Chunk
         scalarField = scalarFieldDict.Values.ToArray();
 
         RebuildChunkMesh();
+
+        if (!overlap) { return; }
+
+        if (fieldPointIndex.x == 0 && this.GetNeighbour("back") != null)
+        {
+            this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, fieldPointPosition.y, fieldPointPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.y == 0 && this.GetNeighbour("bottom") != null)
+        {
+            this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(fieldPointPosition.x, nY * gridSize, fieldPointPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.z == 0 && this.GetNeighbour("right") != null)
+        {
+            this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( fieldPointPosition.x, fieldPointPosition.y, nZ * gridSize), radius, false);
+        }
+
+        if (fieldPointIndex.x == nX && this.GetNeighbour("forward") != null)
+        {
+            this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(0f, fieldPointPosition.y, fieldPointPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.y == nY && this.GetNeighbour("top") != null)
+        {
+            this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(fieldPointPosition.x, 0f, fieldPointPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.z == nZ && this.GetNeighbour("left") != null)
+        {
+            this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( fieldPointPosition.x, fieldPointPosition.y, 0f), radius, false);
+        }
+        
+
+        
+
+        
     }
 
     public void InitializeScalarField()
@@ -244,14 +281,14 @@ public class Chunk
 
         if (direction == "left") 
         { 
-            returnIndex.y += 1;
+            returnIndex.z += 1;
             
             return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         if (direction == "right") 
         { 
-            returnIndex.y -= 1;
+            returnIndex.z -= 1;
             
             return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
