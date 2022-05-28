@@ -75,9 +75,9 @@ public class Setup : MonoBehaviour
 
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
 
-            clickPoint.x = clickPoint.x % (nX * gridSize);
-            clickPoint.y = clickPoint.y % (nY * gridSize);
-            clickPoint.z = clickPoint.z % (nZ * gridSize);
+            clickPoint.x = clickPoint.x;// % (nX * gridSize);
+            clickPoint.y = clickPoint.y;// % (nY * gridSize);
+            clickPoint.z = clickPoint.z;// % (nZ * gridSize);
 
             chunk.ChangeScalarField(2f, clickPoint, 10, true);
         }

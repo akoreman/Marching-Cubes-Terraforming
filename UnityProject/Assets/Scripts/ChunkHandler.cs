@@ -184,36 +184,45 @@ public class Chunk
 
         if (!overlap) { return; }
 
-        return;
+        MonoBehaviour.print(localPosition);
+
+        //return;
 
         if (fieldPointIndex.x == 0 && this.GetNeighbour("back") != null)
         {
-            this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
+            //this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
+            this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
         }
 
         if (fieldPointIndex.y == 0 && this.GetNeighbour("bottom") != null)
         {
-            this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, nY * gridSize, localPosition.z), radius, false);
+            //this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, nY * gridSize, localPosition.z), radius, false);
+            this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
+
         }
 
         if (fieldPointIndex.z == 0 && this.GetNeighbour("right") != null)
         {
-            this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, nZ * gridSize), radius, false);
+            //this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, nZ * gridSize), radius, false);
+            this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, localPosition.z), radius, false);
         }
 
         if (fieldPointIndex.x == nX && this.GetNeighbour("forward") != null)
         {
-            this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(0f, localPosition.y, localPosition.z), radius, false);
+            //this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(0f, localPosition.y, localPosition.z), radius, false);
+            this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
         }
 
         if (fieldPointIndex.y == nY && this.GetNeighbour("top") != null)
         {
-            this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, 0f, localPosition.z), radius, false);
+            //this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, 0f, localPosition.z), radius, false);
+            this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
         }
 
         if (fieldPointIndex.z == nZ && this.GetNeighbour("left") != null)
         {
-            this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
+            //this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
+            this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, localPosition.z), radius, false);
         }
         
 

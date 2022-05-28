@@ -10,6 +10,7 @@ using Unity.Mathematics;
 
 
 // Handles the construction and updating of the scalar field using the Job system.
+// TODO make sure scalar fields of neighbouring chunks overlap.
 public class NoiseTerrain : MonoBehaviour
 {
     public float fieldExponent = 1.0f;
