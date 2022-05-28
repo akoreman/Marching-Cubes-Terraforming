@@ -71,7 +71,7 @@ public class ChunkHandler : MonoBehaviour
     // Given a point return the position of the corner of the chunk that encapsulates it.
     public Vector3 GetNearestChunkCorner(Vector3 position)
     {
-        Vector3 returnVector = new Vector3(0f,0f,0f);
+        Vector3 returnVector = Vector3.zero;
 
         returnVector.x = Mathf.Floor(position.x / chunkXDimension) * chunkXDimension;
         returnVector.y = Mathf.Floor(position.y / chunkYDimension) * chunkYDimension;

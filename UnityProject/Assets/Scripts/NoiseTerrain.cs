@@ -17,8 +17,11 @@ public class NoiseTerrain : MonoBehaviour
 
     public ScalarFieldPoint[] InitializeScalarField(int nX, int nY, int nZ, float gridSize, Vector3 centerOffset)
     {
-        ScalarFieldPoint[] scalarField = new ScalarFieldPoint[nX * nY * nZ];
-        NativeHashMap<int, ScalarFieldPoint> scalarFieldMap = new NativeHashMap<int, ScalarFieldPoint>(nX * nY * nZ, Allocator.TempJob);
+        //ScalarFieldPoint[] scalarField = new ScalarFieldPoint[nX * nY * nZ];
+        ScalarFieldPoint[] scalarField = new ScalarFieldPoint[(nX+1) * (nY+1) * (nZ+1)];
+
+        //NativeHashMap<int, ScalarFieldPoint> scalarFieldMap = new NativeHashMap<int, ScalarFieldPoint>(nX * nY * nZ, Allocator.TempJob);
+        NativeHashMap<int, ScalarFieldPoint> scalarFieldMap = new NativeHashMap<int, ScalarFieldPoint>((nX+1) * (nY+1) * (nZ+1), Allocator.TempJob);
 
         UpdatePotentialJob potentialModificationJob;
 
@@ -34,11 +37,17 @@ public class NoiseTerrain : MonoBehaviour
             fieldExponent = fieldExponent
         };
 
-        JobHandle potentialModificationJobHandle = potentialModificationJob.Schedule(nX * nY * nZ, default);
+        //JobHandle potentialModificationJobHandle = potentialModificationJob.Schedule(nX * nY * nZ, default);
+        JobHandle potentialModificationJobHandle = potentialModificationJob.Schedule((nX+1) * (nY+1) * (nZ+1), default);
 
         potentialModificationJobHandle.Complete();
 
+        /*
         for (int i = 0; i < (nX * nY * nZ); i++)
+            scalarField[i] = scalarFieldMap[i];
+        */
+
+        for (int i = 0; i < ((nX+1) * (nY+1) * (nZ+1)); i++)
             scalarField[i] = scalarFieldMap[i];
 
         scalarFieldMap.Dispose();
@@ -78,11 +87,12 @@ public class NoiseTerrain : MonoBehaviour
 
         void BuildScalarField(int i)
         {
-            Position position = GetCoordsFromLinear(i);
+            //Position position = GetCoordsFromLinear(i);
+            Vector3Int positionIndex = GetCoordsFromLinear(i); 
 
             ScalarFieldPoint scalarFieldPoint;
 
-            scalarFieldPoint.position = new Vector3(position.x * gridSize, position.y * gridSize, position.z * gridSize) + centerOffset;
+            scalarFieldPoint.position = new Vector3(positionIndex.x * gridSize, positionIndex.y * gridSize, positionIndex.z * gridSize) + centerOffset;
             //scalarFieldPoint.potential = scalarFieldPoint.position.y;
             //scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
             //scalarFieldPoint.potential = GetNoiseAt(scalarFieldPoint.position.x, scalarFieldPoint.position.z, 1.0f, 1.0f, 5, 1.0f, 1.0f);
@@ -105,7 +115,7 @@ public class NoiseTerrain : MonoBehaviour
             public int y;
             public int z;
         }
-
+        /*
         Position GetCoordsFromLinear(int index)
         {
             Position output;
@@ -113,6 +123,29 @@ public class NoiseTerrain : MonoBehaviour
             output.x = index / (nY * nZ);
             output.y = (index % (nY * nZ)) / nZ;
             output.z = index % nZ;
+
+            return output;
+        }
+        */
+        /*
+        Vector3Int GetCoordsFromLinear(int index)
+        {
+            Vector3Int output = Vector3Int.zero;
+
+            output.x = index / (nY * nZ);
+            output.y = (index % (nY * nZ)) / nZ;
+            output.z = index % nZ;
+
+            return output;
+        }
+        */
+        Vector3Int GetCoordsFromLinear(int index)
+        {
+            Vector3Int output = Vector3Int.zero;
+
+            output.x = index / ((nY+1) * (nZ+1));
+            output.y = (index % ((nY+1) * (nZ+1))) / (nZ+1);
+            output.z = index % (nZ+1);
 
             return output;
         }
