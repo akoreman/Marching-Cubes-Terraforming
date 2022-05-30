@@ -29,6 +29,10 @@ public class MarchingCubes : MonoBehaviour
         int nY = marchingCubes.GetComponent<ChunkHandler>().nYPerChunk;
         int nZ = marchingCubes.GetComponent<ChunkHandler>().nZPerChunk;
 
+        nX++;
+        nY++;
+        nZ++;
+
         NativeArray<flagNode> flagList = new NativeArray<flagNode>(nX * nY * nZ, Allocator.TempJob);
         NativeQueue<Triangle> triangleQueue = new NativeQueue<Triangle>(Allocator.TempJob);
 

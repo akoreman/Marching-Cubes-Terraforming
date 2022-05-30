@@ -79,7 +79,7 @@ public class Setup : MonoBehaviour
             clickPoint.y = clickPoint.y;// % (nY * gridSize);
             clickPoint.z = clickPoint.z;// % (nZ * gridSize);
 
-            chunk.ChangeScalarField(2f, clickPoint, 10, true);
+            chunk.ChangeScalarField(-2.5f, clickPoint, 10, true);
         }
     }
 

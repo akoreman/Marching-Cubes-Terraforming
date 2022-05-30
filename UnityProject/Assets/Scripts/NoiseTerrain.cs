@@ -36,7 +36,19 @@ public class NoiseTerrain : MonoBehaviour
             ScalarFieldWriter = scalarFieldMap.AsParallelWriter(),
             fieldExponent = fieldExponent
         };
-
+        
+        /*
+        potentialModificationJob = new UpdatePotentialJob()
+        {
+            nX = nX + 1,
+            nY = nY + 1,
+            nZ = nZ + 1,
+            gridSize = gridSize,
+            centerOffset = centerOffset,
+            ScalarFieldWriter = scalarFieldMap.AsParallelWriter(),
+            fieldExponent = fieldExponent
+        };
+        */
         //JobHandle potentialModificationJobHandle = potentialModificationJob.Schedule(nX * nY * nZ, default);
         JobHandle potentialModificationJobHandle = potentialModificationJob.Schedule((nX+1) * (nY+1) * (nZ+1), default);
 
@@ -46,10 +58,10 @@ public class NoiseTerrain : MonoBehaviour
         for (int i = 0; i < (nX * nY * nZ); i++)
             scalarField[i] = scalarFieldMap[i];
         */
-
+        
         for (int i = 0; i < ((nX+1) * (nY+1) * (nZ+1)); i++)
             scalarField[i] = scalarFieldMap[i];
-
+        
         scalarFieldMap.Dispose();
 
         return scalarField;
@@ -94,9 +106,9 @@ public class NoiseTerrain : MonoBehaviour
 
             scalarFieldPoint.position = new Vector3(positionIndex.x * gridSize, positionIndex.y * gridSize, positionIndex.z * gridSize) + centerOffset;
             //scalarFieldPoint.potential = scalarFieldPoint.position.y;
-            //scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
+            scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
             //scalarFieldPoint.potential = GetNoiseAt(scalarFieldPoint.position.x, scalarFieldPoint.position.z, 1.0f, 1.0f, 5, 1.0f, 1.0f);
-
+            /*
             if (scalarFieldPoint.position.y > 2.0f)
             {
                 scalarFieldPoint.potential = 1.0f;
@@ -105,7 +117,7 @@ public class NoiseTerrain : MonoBehaviour
             {
                 scalarFieldPoint.potential = 0.0f; 
             }
-
+            */
             ScalarFieldWriter.TryAdd(i, scalarFieldPoint);
         }
 
