@@ -1,4 +1,4 @@
-# Terraforming Demo
+# Terraforming Prototype
 Early WIP. Terraforming game prototype based on my implementation of the marching cubes algorithm. Inspired by the gameplay of Astroneer.
 
 **Currently Implemented**
