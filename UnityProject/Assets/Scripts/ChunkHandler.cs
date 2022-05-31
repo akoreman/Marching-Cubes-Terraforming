@@ -43,11 +43,14 @@ public class ChunkHandler : MonoBehaviour
     */
 
     // Given a point in 3D space, add a new chunk to chunkHashMap which encapsulates that point.
-    public void AddChunkFromPoint(Vector3 position)
+    public Chunk AddChunkFromPoint(Vector3 position)
     {
         Vector3 positionChunkCorner = GetNearestChunkCorner(position);
 
-        chunkHashMap.Add(positionChunkCorner, new Chunk(positionChunkCorner, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial));
+        Chunk chunk = new Chunk(positionChunkCorner, nXPerChunk, nYPerChunk, nZPerChunk, chunkGridSize, thresholdValue, chunkMaterial);
+        chunkHashMap.Add(positionChunkCorner, chunk);
+
+        return chunk;
     }
 
     // Given a point in 3D space return the chunk which encapsulates that point (if present), other return null.
