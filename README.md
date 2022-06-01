@@ -5,6 +5,7 @@ Early WIP. Terraforming game prototype based on my implementation of the marchin
 - Using the marching cubes algorithm to visualise noise functions.
 - Spawning and de-spawning chunks to generate infinitely large marching cubes worlds.
 - View frustum culling by calculating the camera draw volume and de-spawning chunks not in camera view.
+- Change the geomtry during runtime by changing the underlying scalar field.
 
 
 # Screenshots
