@@ -109,7 +109,7 @@ public class NoiseTerrain : MonoBehaviour
             scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
             //scalarFieldPoint.potential = GetNoiseAt(scalarFieldPoint.position.x, scalarFieldPoint.position.z, 1.0f, 1.0f, 5, 1.0f, 1.0f);
             
-            if (scalarFieldPoint.position.y > 2.0f)
+            if (scalarFieldPoint.position.y > -2.0f)
             {
                 scalarFieldPoint.potential = 1.0f;
             } 

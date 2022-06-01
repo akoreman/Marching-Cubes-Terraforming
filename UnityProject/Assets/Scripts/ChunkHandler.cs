@@ -58,7 +58,7 @@ public class ChunkHandler : MonoBehaviour
     {
         Vector3 nearestChunkCenter = GetNearestChunkCorner(position);
 
-        if (chunkHashMap.ContainsKey(nearestChunkCenter)) {return chunkHashMap[nearestChunkCenter]; }
+        if (chunkHashMap.ContainsKey(nearestChunkCenter)) { return chunkHashMap[nearestChunkCenter]; }
 
         return null;
     }
