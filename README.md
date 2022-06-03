@@ -10,7 +10,4 @@ Early WIP. Terraforming game prototype based on my implementation of the marchin
 
 # Screenshots
 
-<img src="https://raw.github.com/akoreman/Terraforming-Game-Prototype/main/Images/Noise.png" width="400">  
-
-
 <img src="https://raw.github.com/akoreman/Terraforming-Game-Prototype/main/Images/one.gif" width="400">  
