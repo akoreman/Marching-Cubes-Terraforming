@@ -273,7 +273,15 @@ public class MarchingCubes : MonoBehaviour
             Vector3 edge0 = triangle.vertex1 - triangle.vertex0;
             Vector3 edge1 = triangle.vertex2 - triangle.vertex0;
 
-            Vector3 triangleNormal = Vector3.Cross(edge1, edge0).normalized;
+            Vector3 triangleNormal = Vector3.zero;
+
+
+            if (thresholdValue > 0f)
+                triangleNormal = Vector3.Cross(edge1, edge0).normalized;
+            else
+                triangleNormal = Vector3.Cross(edge0, edge1).normalized;
+
+            //print(triangleNormal);
 
             // FOR WELDED VERTICES
             // For each vertex in the queue we chech whether it already exists in the dictionary, if so the correct index is added to the indexlist.
@@ -360,6 +368,11 @@ public class MarchingCubes : MonoBehaviour
                 normalList.Add(triangleNormal);
                 normalList.Add(triangleNormal);
                 normalList.Add(triangleNormal);
+
+                //normalList.Add(new Vector3(0f,1f,0f));
+                //normalList.Add(new Vector3(0f,1f,0f));
+                //normalList.Add(new Vector3(0f,1f,0f));
+
 
                 if (thresholdValue > 0f)
                 {
