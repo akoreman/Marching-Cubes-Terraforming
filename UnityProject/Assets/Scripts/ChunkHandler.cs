@@ -145,21 +145,16 @@ public class Chunk
 
         this.chunkVisible = true;
 
+        marchingTerrain = GameObject.Find("MarchingTerrain");
+        this.chunkIndex = marchingTerrain.GetComponent<ChunkHandler>().GetChunkIndex(this);
 
-        chunkGameObject = new GameObject("Marching Cubes Chunk");
+        chunkGameObject = new GameObject("Chunk " + this.chunkIndex.x.ToString() + " " + this.chunkIndex.y.ToString() + " " + this.chunkIndex.z.ToString());
         chunkGameObject.AddComponent<MeshFilter>();
         chunkGameObject.AddComponent<MeshRenderer>();
         chunkGameObject.GetComponent<Renderer>().material = material;
 
-        marchingTerrain = GameObject.Find("MarchingTerrain");
- 
-
-        this.chunkIndex = marchingTerrain.GetComponent<ChunkHandler>().GetChunkIndex(this);
-
         InitializeScalarField();
-
         BuildFieldPointDictionary();
-
         RebuildChunkMesh();
     }
 
@@ -190,7 +185,7 @@ public class Chunk
         MonoBehaviour.print(localPosition);
 
         //return;
-
+        /*
         if (fieldPointIndex.x == 0 && this.GetNeighbour("back") != null)
         {
             //this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
@@ -201,7 +196,6 @@ public class Chunk
         {
             //this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, nY * gridSize, localPosition.z), radius, false);
             this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
-
         }
 
         if (fieldPointIndex.z == 0 && this.GetNeighbour("right") != null)
@@ -226,6 +220,45 @@ public class Chunk
         {
             //this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
             this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, localPosition.z), radius, false);
+        }
+        */
+
+
+
+
+
+
+
+
+        
+        if (fieldPointIndex.x == 0 && this.GetNeighbour("back") != null)
+        {
+            this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.y == 0 && this.GetNeighbour("bottom") != null)
+        {
+            this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, nY * gridSize, localPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.z == 0 && this.GetNeighbour("right") != null)
+        {
+            this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, nZ * gridSize), radius, false);
+        }
+
+        if (fieldPointIndex.x == nX && this.GetNeighbour("forward") != null)
+        {
+            this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(0f, localPosition.y, localPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.y == nY && this.GetNeighbour("top") != null)
+        {
+            this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, 0f, localPosition.z), radius, false);
+        }
+
+        if (fieldPointIndex.z == nZ && this.GetNeighbour("left") != null)
+        {
+            this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
         }
         
 
@@ -269,42 +302,42 @@ public class Chunk
         { 
             returnIndex.y += 1;
             
-            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+            return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         if (direction == "down") 
         { 
             returnIndex.y -= 1;
             
-            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+            return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         if (direction == "forward") 
         { 
             returnIndex.x += 1;
             
-            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+            return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         if (direction == "back") 
         { 
             returnIndex.x -= 1;
             
-            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+            return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         if (direction == "left") 
         { 
             returnIndex.z -= 1;
             
-            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+            return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         if (direction == "right") 
         { 
             returnIndex.z += 1;
             
-            return  marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
+            return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
         return null;

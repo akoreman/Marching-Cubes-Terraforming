@@ -106,7 +106,7 @@ public class NoiseTerrain : MonoBehaviour
 
             scalarFieldPoint.position = new Vector3(positionIndex.x * gridSize, positionIndex.y * gridSize, positionIndex.z * gridSize) + centerOffset;
             //scalarFieldPoint.potential = scalarFieldPoint.position.y;
-            scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
+            //scalarFieldPoint.potential = Noise(scalarFieldPoint.position.x, scalarFieldPoint.position.y, scalarFieldPoint.position.z);
             //scalarFieldPoint.potential = GetNoiseAt(scalarFieldPoint.position.x, scalarFieldPoint.position.z, 1.0f, 1.0f, 5, 1.0f, 1.0f);
             
             

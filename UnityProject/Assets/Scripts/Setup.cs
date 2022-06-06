@@ -53,10 +53,9 @@ public class Setup : MonoBehaviour
         gridSize = marchingCubes.GetComponent<ChunkHandler>().chunkGridSize;
         
         // Spawn the chunks which are loaded on startup.
-
-        for (int i = 0; i < initialChunkDimension; i++)
-            for (int j = 0; j < initialChunkDimension; j++)
-                for (int k = 0; k < initialChunkDimension; k++)
+        for (int i = -1 * Mathf.RoundToInt(initialChunkDimension / 2); i < Mathf.RoundToInt(initialChunkDimension / 2); i++)
+            for (int j = -1 * Mathf.RoundToInt(initialChunkDimension / 2); j < Mathf.RoundToInt(initialChunkDimension / 2); j++)
+                for (int k = -1 * Mathf.RoundToInt(initialChunkDimension / 2); k < Mathf.RoundToInt(initialChunkDimension / 2); k++)
                     marchingCubes.GetComponent<ChunkHandler>().AddChunk(new Vector3(i*(nX-1)*gridSize,j*(nY-1)*gridSize,k*(nZ-1)*gridSize));
 
         UpdateChunksInView();
@@ -68,17 +67,30 @@ public class Setup : MonoBehaviour
         UpdateChunksInView();
 
         // Handles the input which is used to change the underlying scalar field.
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        if (Input.GetKeyDown("s"))
         {
             Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
 
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
 
-            clickPoint.x = clickPoint.x;// % (nX * gridSize);
-            clickPoint.y = clickPoint.y;// % (nY * gridSize);
-            clickPoint.z = clickPoint.z;// % (nZ * gridSize);
+            //clickPoint.x = clickPoint.x;// % (nX * gridSize);
+            //clickPoint.y = clickPoint.y;// % (nY * gridSize);
+            //clickPoint.z = clickPoint.z;// % (nZ * gridSize);
 
             chunk.ChangeScalarField(-2.5f, clickPoint, 10, true);
+        }
+
+        if (Input.GetKeyDown("a"))
+        {
+            Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
+
+            Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
+
+            //clickPoint.x = clickPoint.x;// % (nX * gridSize);
+            //clickPoint.y = clickPoint.y;// % (nY * gridSize);
+            //clickPoint.z = clickPoint.z;// % (nZ * gridSize);
+
+            chunk.ChangeScalarField(2.5f, clickPoint, 10, true);
         }
     }
 
