@@ -135,6 +135,8 @@ public class Chunk
 
     public bool chunkVisible;
 
+    //Chunk[] neighbouringChunks;
+
     public Chunk(Vector3 positionChunkCorner, int nX, int nY, int nZ, float gridSize, float thresholdValue, Material material)
     {
         this.positionChunkCorner = positionChunkCorner;
@@ -153,6 +155,8 @@ public class Chunk
         chunkGameObject.AddComponent<MeshRenderer>();
         chunkGameObject.GetComponent<Renderer>().material = material;
 
+        //neighbouringChunks = new Chunk[6];
+
         InitializeScalarField();
         BuildFieldPointDictionary();
         RebuildChunkMesh();
@@ -165,12 +169,29 @@ public class Chunk
         chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
     }
 
+    /*
+    void tryFillNeighbourList()
+    {
+
+    }
+    */
+
     // WIP
     public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius, bool overlap)
     {
-        Vector3Int fieldPointIndex = new Vector3Int(Mathf.RoundToInt(localPosition.x /  gridSize), Mathf.RoundToInt(localPosition.y /  gridSize), Mathf.RoundToInt(localPosition.z /  gridSize));
+
+        
+
+        Vector3Int fieldPointIndex = new Vector3Int(Mathf.RoundToInt(localPosition.x /  gridSize) % nX, Mathf.RoundToInt(localPosition.y /  gridSize) % nY, Mathf.RoundToInt(localPosition.z /  gridSize) % nZ);
         Vector3 fieldPointPosition = new Vector3(Mathf.RoundToInt(localPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(localPosition.y / gridSize) * gridSize, Mathf.RoundToInt(localPosition.z / gridSize) * gridSize);
         
+        if (!overlap) 
+        { 
+            MonoBehaviour.print("Receiver chunkindex: " + this.chunkIndex);
+            MonoBehaviour.print("Receiver field node position: " + localPosition);
+            MonoBehaviour.print("Receiver field node index: " + fieldPointIndex);
+        }
+
         ScalarFieldPoint changePoint = scalarFieldDict[fieldPointPosition];
         scalarFieldDict.Remove(fieldPointPosition);
         changePoint.potential += valueChange;
@@ -178,59 +199,92 @@ public class Chunk
         scalarFieldDict.Add(fieldPointPosition,changePoint);
         scalarField = scalarFieldDict.Values.ToArray();
 
+        /*
+        for (int i = 0; i <= radius; i++)
+        {
+            Vector3Int returnIndex = this.chunkIndex;
+
+            for (int j = 0; j < 6; j++)
+            {
+                
+                this.ChangeScalarField();
+            }
+        }
+        */
+
         RebuildChunkMesh();
 
-        if (!overlap) { return; }
+        
 
-        MonoBehaviour.print(localPosition);
+        if (!overlap) 
+        { 
+            return;
+        }
 
         //return;
-        /*
+        MonoBehaviour.print("Calling chunkindex: " + this.chunkIndex);
+        MonoBehaviour.print("Calling field node position: " + localPosition);
+        MonoBehaviour.print("Calling field node index: " + fieldPointIndex);
+
+        //return;
+        
         if (fieldPointIndex.x == 0 && this.GetNeighbour("back") != null)
         {
             //this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
-            this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
+            MonoBehaviour.print("back");
+            this.GetNeighbour("back").ChangeScalarField(valueChange, localPosition, radius, false);
+            
         }
 
-        if (fieldPointIndex.y == 0 && this.GetNeighbour("bottom") != null)
+        if (fieldPointIndex.y == 0 && this.GetNeighbour("down") != null)
         {
             //this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, nY * gridSize, localPosition.z), radius, false);
-            this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
+            MonoBehaviour.print("down");
+            this.GetNeighbour("down").ChangeScalarField(valueChange, localPosition, radius, false);
+            
         }
 
-        if (fieldPointIndex.z == 0 && this.GetNeighbour("right") != null)
+        if (fieldPointIndex.z == 0 && this.GetNeighbour("left") != null)
         {
             //this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, nZ * gridSize), radius, false);
-            this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, localPosition.z), radius, false);
+            MonoBehaviour.print("left");
+            this.GetNeighbour("left").ChangeScalarField(valueChange, localPosition, radius, false);
+           
         }
 
         if (fieldPointIndex.x == nX && this.GetNeighbour("forward") != null)
         {
             //this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(0f, localPosition.y, localPosition.z), radius, false);
-            this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
+            MonoBehaviour.print("forward"); 
+            this.GetNeighbour("forward").ChangeScalarField(valueChange, localPosition, radius, false);
+                      
         }
 
-        if (fieldPointIndex.y == nY && this.GetNeighbour("top") != null)
+        if (fieldPointIndex.y == nY && this.GetNeighbour("up") != null)
         {
             //this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, 0f, localPosition.z), radius, false);
-            this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, localPosition.y, localPosition.z), radius, false);
+            MonoBehaviour.print("up");
+            this.GetNeighbour("up").ChangeScalarField(valueChange, localPosition, radius, false);
+            
         }
 
-        if (fieldPointIndex.z == nZ && this.GetNeighbour("left") != null)
+        if (fieldPointIndex.z == nZ && this.GetNeighbour("right") != null)
         {
             //this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
-            this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, localPosition.z), radius, false);
+            MonoBehaviour.print("right");
+            this.GetNeighbour("right").ChangeScalarField(valueChange, localPosition, radius, false);
+            
         }
-        */
-
-
-
-
-
-
-
-
         
+
+
+
+
+
+
+
+
+        /*
         if (fieldPointIndex.x == 0 && this.GetNeighbour("back") != null)
         {
             this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
@@ -260,7 +314,7 @@ public class Chunk
         {
             this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
         }
-        
+        */
 
         
 
@@ -340,7 +394,19 @@ public class Chunk
             return marchingTerrain.GetComponent<ChunkHandler>().GetChunkFromIndices(returnIndex);
         }
 
+        MonoBehaviour.print("Invalid direction string.");
+
         return null;
     }
 
+    public Dictionary<int, Vector3Int> numberToDirectionTranslationTable = new Dictionary<int, Vector3Int>{ 
+                                                                                                    {0, new Vector3Int(1,0,0)}, 
+                                                                                                    {1, new Vector3Int(-1,0,0)},
+                                                                                                    {2, new Vector3Int(-1,0,0)}, 
+                                                                                                    {3, new Vector3Int(-1,0,0)},
+                                                                                                    {4, new Vector3Int(-1,0,0)}, 
+                                                                                                    {5, new Vector3Int(-1,0,0)}
+                                                                                                    };
+
 }
+

@@ -66,16 +66,11 @@ public class Setup : MonoBehaviour
         ClearActiveChunkDictionnary();
         UpdateChunksInView();
 
-        // Handles the input which is used to change the underlying scalar field.
+        // Handles the inputs which are used to change the underlying scalar field.
         if (Input.GetKeyDown("s"))
         {
             Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
-
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
-
-            //clickPoint.x = clickPoint.x;// % (nX * gridSize);
-            //clickPoint.y = clickPoint.y;// % (nY * gridSize);
-            //clickPoint.z = clickPoint.z;// % (nZ * gridSize);
 
             chunk.ChangeScalarField(-2.5f, clickPoint, 10, true);
         }
@@ -83,12 +78,7 @@ public class Setup : MonoBehaviour
         if (Input.GetKeyDown("a"))
         {
             Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
-
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
-
-            //clickPoint.x = clickPoint.x;// % (nX * gridSize);
-            //clickPoint.y = clickPoint.y;// % (nY * gridSize);
-            //clickPoint.z = clickPoint.z;// % (nZ * gridSize);
 
             chunk.ChangeScalarField(2.5f, clickPoint, 10, true);
         }
