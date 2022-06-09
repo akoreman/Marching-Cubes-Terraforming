@@ -177,18 +177,64 @@ public class Chunk
     */
 
     // WIP
-    public void ChangeScalarField(float valueChange, Vector3 localPosition, int radius, bool overlap)
+
+    List<ScalarFieldPoint> getPointsWithinRadius(Vector3 worldPosition, float radius)
+    {
+        List<ScalarFieldPoint> returnList = new List<ScalarFieldPoint>();
+
+        Vector3 closestFieldPointPosition = new Vector3(Mathf.RoundToInt(worldPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(worldPosition.y / gridSize) * gridSize, Mathf.RoundToInt(worldPosition.z / gridSize) * gridSize);
+
+        if (Vector3.Distance(closestFieldPointPosition, worldPosition) > radius) { return returnList; }
+
+        returnList.Add(scalarFieldDict[closestFieldPointPosition]);
+
+        int numFieldPointsXPos = Mathf.FloorToInt((radius - (closestFieldPointPosition.x - worldPosition.x)) / gridSize);
+        int numFieldPointsXNeg = Mathf.FloorToInt((radius + (closestFieldPointPosition.x - worldPosition.x)) / gridSize);
+        int numFieldPointsYPos = Mathf.FloorToInt((radius - (closestFieldPointPosition.y - worldPosition.y)) / gridSize);
+        int numFieldPointsYNeg = Mathf.FloorToInt((radius + (closestFieldPointPosition.y - worldPosition.y)) / gridSize);
+        int numFieldPointsZPos = Mathf.FloorToInt((radius - (closestFieldPointPosition.z - worldPosition.z)) / gridSize);
+        int numFieldPointsZNeg = Mathf.FloorToInt((radius + (closestFieldPointPosition.z - worldPosition.z)) / gridSize);
+
+        for (int i = 1; i <= numFieldPointsXPos; i++) { returnList.Add(scalarFieldDict[closestFieldPointPosition + i * new Vector3(gridSize,0,0)]); }
+        for (int i = 1; i <= numFieldPointsXNeg; i++) { returnList.Add(scalarFieldDict[closestFieldPointPosition - i * new Vector3(gridSize,0,0)]); }
+        for (int i = 1; i <= numFieldPointsYPos; i++) { returnList.Add(scalarFieldDict[closestFieldPointPosition + i * new Vector3(0,gridSize,0)]); }
+        for (int i = 1; i <= numFieldPointsYNeg; i++) { returnList.Add(scalarFieldDict[closestFieldPointPosition - i * new Vector3(0,gridSize,0)]); }
+        for (int i = 1; i <= numFieldPointsZPos; i++) { returnList.Add(scalarFieldDict[closestFieldPointPosition + i * new Vector3(0,0,gridSize)]); }
+        for (int i = 1; i <= numFieldPointsZNeg; i++) { returnList.Add(scalarFieldDict[closestFieldPointPosition - i * new Vector3(0,0,gridSize)]); }
+
+        return returnList;
+    }
+
+    public void ChangeScalarFieldPoint(ScalarFieldPoint point, float value)
+    {
+        scalarFieldDict.Remove(point.position);
+        point.potential += value;
+
+        scalarFieldDict.Add(point.position, point);
+        scalarField = scalarFieldDict.Values.ToArray();
+    }
+
+    public void ChangeScalarFieldRadius()
     {
 
-        
+    }
+
+
+
+    public void ChangeScalarField(float valueChange, Vector3 worldPosition, float radius, bool overlap)
+    {
+
+        Vector3 localPosition = worldPosition - this.positionChunkCorner;
+
+        //List<ScalarFieldPoint> changedPoints = getPointsWithinRadius(worldPosition, radius);
 
         Vector3Int fieldPointIndex = new Vector3Int(Mathf.RoundToInt(localPosition.x /  gridSize) % nX, Mathf.RoundToInt(localPosition.y /  gridSize) % nY, Mathf.RoundToInt(localPosition.z /  gridSize) % nZ);
-        Vector3 fieldPointPosition = new Vector3(Mathf.RoundToInt(localPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(localPosition.y / gridSize) * gridSize, Mathf.RoundToInt(localPosition.z / gridSize) * gridSize);
+        Vector3 fieldPointPosition = new Vector3(Mathf.RoundToInt(worldPosition.x /  gridSize) * gridSize, Mathf.RoundToInt(worldPosition.y / gridSize) * gridSize, Mathf.RoundToInt(worldPosition.z / gridSize) * gridSize);
         
         if (!overlap) 
         { 
             MonoBehaviour.print("Receiver chunkindex: " + this.chunkIndex);
-            MonoBehaviour.print("Receiver field node position: " + localPosition);
+            MonoBehaviour.print("Receiver field node position: " + worldPosition);
             MonoBehaviour.print("Receiver field node index: " + fieldPointIndex);
         }
 
@@ -196,7 +242,7 @@ public class Chunk
         scalarFieldDict.Remove(fieldPointPosition);
         changePoint.potential += valueChange;
 
-        scalarFieldDict.Add(fieldPointPosition,changePoint);
+        scalarFieldDict.Add(fieldPointPosition, changePoint);
         scalarField = scalarFieldDict.Values.ToArray();
 
         /*
@@ -232,7 +278,7 @@ public class Chunk
         {
             //this.GetNeighbour("back").ChangeScalarField(valueChange, new Vector3(nX * gridSize, localPosition.y, localPosition.z), radius, false);
             MonoBehaviour.print("back");
-            this.GetNeighbour("back").ChangeScalarField(valueChange, localPosition, radius, false);
+            this.GetNeighbour("back").ChangeScalarField(valueChange, worldPosition, radius, false);
             
         }
 
@@ -240,7 +286,7 @@ public class Chunk
         {
             //this.GetNeighbour("bottom").ChangeScalarField(valueChange, new Vector3(localPosition.x, nY * gridSize, localPosition.z), radius, false);
             MonoBehaviour.print("down");
-            this.GetNeighbour("down").ChangeScalarField(valueChange, localPosition, radius, false);
+            this.GetNeighbour("down").ChangeScalarField(valueChange, worldPosition, radius, false);
             
         }
 
@@ -248,7 +294,7 @@ public class Chunk
         {
             //this.GetNeighbour("right").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, nZ * gridSize), radius, false);
             MonoBehaviour.print("left");
-            this.GetNeighbour("left").ChangeScalarField(valueChange, localPosition, radius, false);
+            this.GetNeighbour("left").ChangeScalarField(valueChange, worldPosition, radius, false);
            
         }
 
@@ -256,7 +302,7 @@ public class Chunk
         {
             //this.GetNeighbour("forward").ChangeScalarField(valueChange, new Vector3(0f, localPosition.y, localPosition.z), radius, false);
             MonoBehaviour.print("forward"); 
-            this.GetNeighbour("forward").ChangeScalarField(valueChange, localPosition, radius, false);
+            this.GetNeighbour("forward").ChangeScalarField(valueChange, worldPosition, radius, false);
                       
         }
 
@@ -264,7 +310,7 @@ public class Chunk
         {
             //this.GetNeighbour("top").ChangeScalarField(valueChange, new Vector3(localPosition.x, 0f, localPosition.z), radius, false);
             MonoBehaviour.print("up");
-            this.GetNeighbour("up").ChangeScalarField(valueChange, localPosition, radius, false);
+            this.GetNeighbour("up").ChangeScalarField(valueChange, worldPosition, radius, false);
             
         }
 
@@ -272,7 +318,7 @@ public class Chunk
         {
             //this.GetNeighbour("left").ChangeScalarField(valueChange, new Vector3( localPosition.x, localPosition.y, 0f), radius, false);
             MonoBehaviour.print("right");
-            this.GetNeighbour("right").ChangeScalarField(valueChange, localPosition, radius, false);
+            this.GetNeighbour("right").ChangeScalarField(valueChange, worldPosition, radius, false);
             
         }
         
