@@ -10,6 +10,7 @@ WIP. Terraforming prototype based on my implementation of the marching cubes alg
 
 **To Do**
 - Implement height map initialisation to start in a more interesting enviroment.
+- Implement brush teraforming to manipulate multiple points at once.
 
 
 
