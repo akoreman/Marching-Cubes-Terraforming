@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: make this prettier.
 public class CameraHandler : MonoBehaviour
 {
     //Camera camera;
@@ -14,6 +15,8 @@ public class CameraHandler : MonoBehaviour
 
         movementSpeed = 0.1f;
         rotationSpeed = 60f;
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Handle the camera movement.
@@ -44,16 +47,6 @@ public class CameraHandler : MonoBehaviour
             print(rotationSpeed);
         }
 
-        if (Input.GetKey("n"))
-        {
-            this.transform.Rotate(new Vector3(0,0, rotationSpeed * Time.deltaTime));
-        }
-
-        if (Input.GetKey("m"))
-        {
-            this.transform.Rotate(new Vector3(0,0, -rotationSpeed * Time.deltaTime));
-        }
-
         if (Input.GetKeyDown("r"))
         {
             this.transform.localPosition = new Vector3(0f,0f,0f);
@@ -61,9 +54,11 @@ public class CameraHandler : MonoBehaviour
         }
 
         Vector3 currentPosition = GetComponent<Camera>().transform.localPosition;
+        Vector3 currentRotation = GetComponent<Camera>().transform.localEulerAngles;
 
-        this.transform.Rotate(new Vector3(0, Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime,0));
-        this.transform.Rotate(new Vector3(-Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime, 0,0));
+        currentRotation = currentRotation + new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0)  * rotationSpeed * Time.deltaTime;
+
+        GetComponent<Camera>().transform.localEulerAngles = currentRotation;
 
         if (Input.GetKey("space"))
         {
@@ -81,7 +76,11 @@ public class CameraHandler : MonoBehaviour
 
         if (Input.GetKey("escape"))
         {
-            Application.Quit();
+            #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                Application.Quit();
+            #endif
         }
 
 

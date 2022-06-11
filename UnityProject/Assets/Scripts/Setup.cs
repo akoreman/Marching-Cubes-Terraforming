@@ -67,7 +67,7 @@ public class Setup : MonoBehaviour
         UpdateChunksInView();
 
         // Handles the inputs which are used to change the underlying scalar field.
-        if (Input.GetKeyDown("s"))
+        if (Input.GetKeyDown("s") | Input.GetMouseButtonDown(0))
         {
             Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
@@ -75,7 +75,7 @@ public class Setup : MonoBehaviour
             chunk.ChangeScalarField(-2.5f, clickPoint, 10, true);
         }
 
-        if (Input.GetKeyDown("a"))
+        if (Input.GetKeyDown("a") | Input.GetMouseButtonDown(1))
         {
             Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
             Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
