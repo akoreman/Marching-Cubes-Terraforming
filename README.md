@@ -6,10 +6,11 @@ WIP. Terraforming prototype based on my implementation of the marching cubes alg
 - Spawning and de-spawning chunks to generate infinitely large marching cubes worlds.
 - View frustum culling by calculating the camera draw volume and de-spawning chunks not in camera view.
 - Change the geomtry during runtime by changing the underlying scalar field.
+- First person mouse controls.
 
 **To Do**
 - Implement height map initialisation to start in a more interesting enviroment.
-- Implement firt person mouse controls.
+
 
 
 # Screenshots
