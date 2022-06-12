@@ -1,4 +1,4 @@
-# Terraforming Prototype
+# Marching Cubes Terraforming 
 WIP. Terraforming mechanism prototype based on my multi-threaded implementation of the marching cubes algorithm (https://github.com/akoreman/Marching-Cubes-Unity-Job-System). Inspired by the gameplay of Astroneer.
 
 **Currently Implemented**
