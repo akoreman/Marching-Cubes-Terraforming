@@ -12,7 +12,7 @@ WIP. Implementation of a terraforming game mechanic mechanism prototype based on
 **To Do**
 - Implement height map initialisation to start in a more interesting enviroment.
 - Implement brush teraforming to manipulate multiple points at once.
-
+- Raycast for making terraforming clicks mure intuitive.
 
 
 # Screenshots
