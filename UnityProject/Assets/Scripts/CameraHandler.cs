@@ -9,6 +9,8 @@ public class CameraHandler : MonoBehaviour
     float movementSpeed;
     float rotationSpeed;
 
+    Transform capsuleTransform;
+
     void Awake()
     {
         //camera = Camera.current;
@@ -17,11 +19,14 @@ public class CameraHandler : MonoBehaviour
         rotationSpeed = 60f;
 
         Cursor.lockState = CursorLockMode.Locked;
+        capsuleTransform = this.transform.parent;
     }
 
     // Handle the camera movement.
     void Update()
     {
+        this.transform.position = capsuleTransform.position;
+
         if (Input.GetKeyDown("x"))
         {
             movementSpeed /= Mathf.Sqrt(10f);
@@ -83,7 +88,7 @@ public class CameraHandler : MonoBehaviour
             #endif
         }
 
-
+        capsuleTransform.position = this.transform.position;
        
     }
 }

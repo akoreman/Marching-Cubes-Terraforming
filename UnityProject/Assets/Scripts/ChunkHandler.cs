@@ -107,6 +107,35 @@ public class ChunkHandler : MonoBehaviour
         return returnVector;
     }
 
+    List<Chunk> getChunksWithinRadius(Vector3 worldPosition, float radius)
+    {   
+        List<Chunk> outputList = new List<Chunk>();
+        //Chunk centerChunk = this.GetChunkFromPosition(worldPosition);
+
+        //outputList.Add(centerChunk);
+
+        float x = worldPosition.x - radius;
+        float y = worldPosition.y - radius;
+        float z = worldPosition.z - radius;
+
+        int numChunkRadius = Mathf.FloorToInt(radius / (nX * gridSize));
+
+        while(Mathf.Sqrt(x*x + worldPosition.x * worldPosition.x) < radius)
+        {
+            while(Mathf.Sqrt(y*y + worldPosition.y * worldPosition.y) < radius)
+            {
+                while(Mathf.Sqrt(z*z + worldPosition.z * worldPosition.z) < radius)
+                    {
+                        outputList.Add(this.GetChunkFromPosition( new Vector3(x,y,z) ));
+
+                        x += nX * chunkGridSize;
+                        y += nY * chunkGridSize;
+                        z += nZ * chunkGridSize;
+                    }
+            }
+        }
+    }
+
 }
 
 // Class which handles the chunks.
@@ -155,6 +184,8 @@ public class Chunk
         chunkGameObject.AddComponent<MeshRenderer>();
         chunkGameObject.GetComponent<Renderer>().material = material;
 
+        chunkGameObject.AddComponent<MeshCollider>();
+
         //neighbouringChunks = new Chunk[6];
 
         InitializeScalarField();
@@ -167,6 +198,7 @@ public class Chunk
     {
         mesh = marchingTerrain.GetComponent<MarchingCubes>().GetMeshFromField(scalarField, thresholdValue);
         chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
+        chunkGameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
     }
 
     /*
