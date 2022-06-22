@@ -15,7 +15,7 @@ public class CameraHandler : MonoBehaviour
     {
         //camera = Camera.current;
 
-        movementSpeed = 0.1f;
+        movementSpeed = 5f;
         rotationSpeed = 60f;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -60,22 +60,17 @@ public class CameraHandler : MonoBehaviour
 
         Vector3 currentPosition = GetComponent<Camera>().transform.localPosition;
         Vector3 currentRotation = GetComponent<Camera>().transform.localEulerAngles;
+        Vector3 currentDirection = GetComponent<Camera>().transform.forward;
+        Vector3 currentRight = GetComponent<Camera>().transform.right;
 
         currentRotation = currentRotation + new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0)  * rotationSpeed * Time.deltaTime;
 
         GetComponent<Camera>().transform.localEulerAngles = currentRotation;
 
-        if (Input.GetKey("space"))
-        {
-            Vector3 direction = GetComponent<Camera>().transform.forward;
-            currentPosition += direction * movementSpeed * Time.deltaTime;
-        }
-
-        if (Input.GetKey(KeyCode.LeftControl))
-        {
-            Vector3 direction = GetComponent<Camera>().transform.forward;
-            currentPosition -= direction * movementSpeed * Time.deltaTime;
-        }
+        currentDirection.y = 0;
+        currentRight.y = 0;
+        currentPosition += Input.GetAxis("Vertical") * movementSpeed * currentDirection * Time.deltaTime;
+        currentPosition += Input.GetAxis("Horizontal") * movementSpeed * currentRight * Time.deltaTime;
 
         this.transform.localPosition = currentPosition;
 
@@ -88,7 +83,6 @@ public class CameraHandler : MonoBehaviour
             #endif
         }
 
-        capsuleTransform.position = this.transform.position;
-       
+        capsuleTransform.position = this.transform.position;    
     }
 }

@@ -106,7 +106,7 @@ public class ChunkHandler : MonoBehaviour
 
         return returnVector;
     }
-
+    /*
     List<Chunk> getChunksWithinRadius(Vector3 worldPosition, float radius)
     {   
         List<Chunk> outputList = new List<Chunk>();
@@ -118,24 +118,24 @@ public class ChunkHandler : MonoBehaviour
         float y = worldPosition.y - radius;
         float z = worldPosition.z - radius;
 
-        int numChunkRadius = Mathf.FloorToInt(radius / (nX * gridSize));
+        int numSteps = 0;
 
         while(Mathf.Sqrt(x*x + worldPosition.x * worldPosition.x) < radius)
         {
             while(Mathf.Sqrt(y*y + worldPosition.y * worldPosition.y) < radius)
             {
                 while(Mathf.Sqrt(z*z + worldPosition.z * worldPosition.z) < radius)
-                    {
-                        outputList.Add(this.GetChunkFromPosition( new Vector3(x,y,z) ));
+                {
+                    outputList.Add(this.GetChunkFromPosition( new Vector3(x,y,z) ));
 
-                        x += nX * chunkGridSize;
-                        y += nY * chunkGridSize;
-                        z += nZ * chunkGridSize;
-                    }
+                    x += nX * chunkGridSize;
+                    y += nY * chunkGridSize;
+                    z += nZ * chunkGridSize;
+                }
             }
         }
     }
-
+    */
 }
 
 // Class which handles the chunks.
