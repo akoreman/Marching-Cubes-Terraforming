@@ -8,12 +8,11 @@ WIP. Implementation of a terraforming game mechanic mechanism prototype based on
 - Change the geomtry during runtime by changing the underlying scalar field.
 - Building a mesh collider for the chunks at runtime.
 - First person controls to walk through the world.
+- Uses Unity raycasts to get the points where to terraform.
 
 **To Do**
 - Implement height map initialisation to start in a more interesting enviroment.
-- Implement brush teraforming to manipulate multiple points at once.
-- Raycast for making terraforming clicks mure intuitive.
-
+- Implement brush teraforming to manipulate multiple points at once
 
 # Screenshots
 
