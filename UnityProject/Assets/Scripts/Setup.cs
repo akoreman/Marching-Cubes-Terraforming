@@ -67,20 +67,32 @@ public class Setup : MonoBehaviour
         UpdateChunksInView();
 
         // Handles the inputs which are used to change the underlying scalar field.
-        if (Input.GetKeyDown("s") | Input.GetMouseButtonDown(0))
-        {
-            Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
-            Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
+        if (Input.GetMouseButtonDown(0))
+        {  
+            RaycastHit hit;
 
-            chunk.ChangeScalarField(-2.5f, clickPoint, 10, true);
+            if (Physics.Raycast(camera.transform.position,camera.transform.forward, out hit))
+            {
+                Vector3 clickPoint = hit.point + hit.normal * gridSize / 2;
+
+                Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
+
+                chunk.ChangeScalarField(-2.5f, clickPoint, 10, true);
+            }
         }
 
-        if (Input.GetKeyDown("a") | Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))
         {
-            Vector3 clickPoint = cameraTransform.position + cameraTransform.forward.normalized * clickDistance;
-            Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
+            RaycastHit hit;
 
-            chunk.ChangeScalarField(2.5f, clickPoint, 10, true);
+            if (Physics.Raycast(camera.transform.position,camera.transform.forward, out hit))
+            {
+                Vector3 clickPoint = hit.point - hit.normal * gridSize / 2;
+
+                Chunk chunk = marchingCubes.GetComponent<ChunkHandler>().GetChunkFromPosition(clickPoint);
+
+                chunk.ChangeScalarField(+2.5f, clickPoint, 10, true);
+            }
         }
     }
 
