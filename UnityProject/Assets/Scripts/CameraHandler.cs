@@ -6,20 +6,24 @@ using UnityEngine;
 public class CameraHandler : MonoBehaviour
 {
     //Camera camera;
-    float movementSpeed;
-    float rotationSpeed;
+    public float movementSpeed;
+    public float jumpSpeed;
+    public float rotationSpeed;
 
     Transform capsuleTransform;
+    Rigidbody rigidbody;
 
     void Awake()
     {
         //camera = Camera.current;
 
-        movementSpeed = 5f;
-        rotationSpeed = 60f;
+        //movementSpeed = 5f;
+        //rotationSpeed = 60f;
 
         Cursor.lockState = CursorLockMode.Locked;
         capsuleTransform = this.transform.parent;
+
+        rigidbody = capsuleTransform.gameObject.GetComponent<Rigidbody>();
     }
 
     // Handle the camera movement.
@@ -58,6 +62,7 @@ public class CameraHandler : MonoBehaviour
             this.transform.eulerAngles = new Vector3(0f, 0f, 0f);
         }
 
+        
         Vector3 currentPosition = GetComponent<Camera>().transform.localPosition;
         Vector3 currentRotation = GetComponent<Camera>().transform.localEulerAngles;
         Vector3 currentDirection = GetComponent<Camera>().transform.forward;
@@ -69,8 +74,16 @@ public class CameraHandler : MonoBehaviour
 
         currentDirection.y = 0;
         currentRight.y = 0;
-        currentPosition += Input.GetAxis("Vertical") * movementSpeed * currentDirection * Time.deltaTime;
-        currentPosition += Input.GetAxis("Horizontal") * movementSpeed * currentRight * Time.deltaTime;
+        ///currentPosition += Input.GetAxis("Vertical") * movementSpeed * currentDirection * Time.deltaTime;
+        //currentPosition += Input.GetAxis("Horizontal") * movementSpeed * currentRight * Time.deltaTime;
+
+        rigidbody.velocity += Input.GetAxis("Vertical") * movementSpeed * currentDirection * Time.deltaTime;
+        rigidbody.velocity += Input.GetAxis("Horizontal") * movementSpeed * currentRight * Time.deltaTime;
+
+        if (Input.GetKeyDown("space"))
+        {
+            rigidbody.velocity += new Vector3(0f,1f,0f) * jumpSpeed * Time.deltaTime;
+        }
 
         this.transform.localPosition = currentPosition;
 

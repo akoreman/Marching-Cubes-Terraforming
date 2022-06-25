@@ -106,7 +106,7 @@ public class ChunkHandler : MonoBehaviour
 
         return returnVector;
     }
-    /*
+    
     List<Chunk> getChunksWithinRadius(Vector3 worldPosition, float radius)
     {   
         List<Chunk> outputList = new List<Chunk>();
@@ -128,14 +128,16 @@ public class ChunkHandler : MonoBehaviour
                 {
                     outputList.Add(this.GetChunkFromPosition( new Vector3(x,y,z) ));
 
-                    x += nX * chunkGridSize;
-                    y += nY * chunkGridSize;
-                    z += nZ * chunkGridSize;
+                    x += nXPerChunk * chunkGridSize;
+                    y += nYPerChunk * chunkGridSize;
+                    z += nZPerChunk * chunkGridSize;
                 }
             }
         }
+
+        return outputList;
     }
-    */
+    
 }
 
 // Class which handles the chunks.
