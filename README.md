@@ -1,5 +1,5 @@
 # Marching Cubes Terraforming 
-WIP. Implementation of a terraforming game mechanic mechanism prototype based on my multi-threaded implementation of the marching cubes algorithm (https://github.com/akoreman/Marching-Cubes-Unity-Job-System). Inspired by the gameplay of Astroneer.
+WIP. Implementation of a terraforming game mechanic mechanism prototype based on my multi-threaded implementation of the marching cubes algorithm (https://github.com/akoreman/Marching-Cubes-Unity-Job-System). Inspired by the gameplay of Astroneer. Uses Unity URP and shader graphs.
 
 **Currently Implemented**
 - Spawning and de-spawning chunks to generate infinitely large marching cubes worlds.
@@ -8,6 +8,7 @@ WIP. Implementation of a terraforming game mechanic mechanism prototype based on
 - Building a mesh collider for the chunks at runtime.
 - First person controls to walk through the world.
 - Uses Unity raycasts to get the points where to terraform.
+
 
 **To Do**
 - Implement height map initialisation to start in a more interesting enviroment.
