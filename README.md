@@ -8,10 +8,10 @@ WIP. Implementation of a terraforming game mechanic mechanism prototype based on
 - Building a mesh collider for the chunks at runtime.
 - First person controls to walk through the world.
 - Uses Unity raycasts to get the points where to terraform.
+- Uses Perlin noise to initialiaze a heightmap environment.
 
 
 **To Do**
-- Implement height map initialisation to start in a more interesting enviroment.
 - Implement brush teraforming to manipulate multiple points at once.
 - Use a shader to make it look a bit more natural.
 
