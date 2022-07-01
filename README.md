@@ -19,3 +19,4 @@ WIP. Implementation of a terraforming game mechanic mechanism prototype based on
 
 <img src="https://raw.github.com/akoreman/Terraforming-Game-Prototype/main/Images/one.gif" width="400">  
 <img src="https://raw.github.com/akoreman/Terraforming-Game-Prototype/main/Images/two.gif" width="400">  
+<img src="https://raw.github.com/akoreman/Terraforming-Game-Prototype/main/Images/three.gif" width="400">  
