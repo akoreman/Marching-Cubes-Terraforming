@@ -394,7 +394,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104226780}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.761713, y: 9.68, z: -25.585232}
+  m_LocalPosition: {x: 15.761713, y: 100, z: -25.585232}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialChunkDimension: 0
-  drawDistance: 10
+  drawDistance: 50
   clickDistance: 15
   camera: {fileID: 1288158630}
   padding: 2
@@ -774,7 +774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cb9554539a75cc469fc5aa749d78c1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertexInterpolation: 0
+  vertexInterpolation: 1
   vertexWelding: 0
 --- !u!114 &1930594825
 MonoBehaviour:
@@ -791,6 +791,6 @@ MonoBehaviour:
   nXPerChunk: 10
   nYPerChunk: 10
   nZPerChunk: 10
-  chunkGridSize: 1
+  chunkGridSize: 4
   chunkMaterial: {fileID: 2100000, guid: 6c776e55273c5b0468d5833c877a3e76, type: 2}
   thresholdValue: 0.5

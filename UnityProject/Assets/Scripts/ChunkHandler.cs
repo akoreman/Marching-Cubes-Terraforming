@@ -274,7 +274,7 @@ public class Chunk
 
         ScalarFieldPoint changePoint = scalarFieldDict[fieldPointPosition];
         scalarFieldDict.Remove(fieldPointPosition);
-        changePoint.potential += valueChange;
+        changePoint.potential += valueChange / Mathf.Abs((fieldPointPosition - worldPosition).sqrMagnitude);
 
         scalarFieldDict.Add(fieldPointPosition, changePoint);
         scalarField = scalarFieldDict.Values.ToArray();
